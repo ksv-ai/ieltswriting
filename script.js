@@ -373,7 +373,7 @@ function formatModelText(text) {
         .replace(/Overview:/g, '<strong>Overview:</strong>')
         .replace(/Body Paragraph (\d+):/g, '<strong>Body Paragraph $1:</strong>')
         .replace(/Conclusion:/g, '<strong>Conclusion:</strong>')
-        .replace(/Main Points \(Planning Phase\):/g, '<strong style="color: #16a34a; display: block; margin-top: 10px;">Main Points (Planning Phase):</strong>');
+        .replace(/How to Plan Your Answer:/g, '<strong style="color: #16a34a; display: block; margin-top: 15px; font-size: 1.2rem;">How to Plan Your Answer:</strong>');
     return formatted;
 }
 
@@ -385,7 +385,7 @@ function calculateModelWordCount(text) {
         .replace(/Overview:\n?/g, '')
         .replace(/Conclusion:\n?/g, '')
         .replace(/Body Paragraph \d+:\n?/g, '')
-        .replace(/Main Points \(Planning Phase\):[\s\S]*/, ''); // Exclude planning phase entirely from count
+        .replace(/How to Plan Your Answer:[\s\S]*/, ''); // Exclude planning phase entirely from count
     let words = textForCount.match(/\S+/g);
     return words ? words.length : 0;
 }
