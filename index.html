@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Writing Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js for rendering graphs in Task 1 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Real IELTS Exam Top Bar -->
+    <header class="exam-top-bar">
+        <div class="top-bar-left">
+            <span class="candidate-info">Candidate Name: <strong>Practice Mode</strong></span>
+            <span class="candidate-info">Candidate Number: <strong>999999</strong></span>
+        </div>
+        <div class="top-bar-center">
+            <div class="timer-wrapper">
+                <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="timer-display" id="timer-display" title="Click to edit time">60:00</span>
+                <div id="timer-edit-container" class="hidden">
+                    <input type="number" id="timer-input" value="60" min="1" max="120" />
+                    <button id="timer-save" class="btn-small">Set</button>
+                </div>
+            </div>
+            <div class="timer-control">
+                <button id="toggle-time-btn" class="text-btn">Hide</button>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <button id="font-decrease" class="icon-btn" title="Decrease Font Size">A-</button>
+            <button id="font-increase" class="icon-btn" title="Increase Font Size">A+</button>
+            <button id="help-btn" class="icon-btn" title="Help">?</button>
+            <button id="settings-btn" class="icon-btn" style="width: auto; padding: 0 10px;" title="Toggle Custom Mode">⚙ Custom Mode</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        
+        <!-- TASK 1 SECTION -->
+        <div id="task1-section" class="task-section active">
+            <div class="split-container">
+                <!-- Left Panel: Question -->
+                <div class="panel left-panel" id="t1-left-panel">
+                    <div class="panel-header exam-panel-header">
+                        <h2>Writing Task 1</h2>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="t1-model-label" class="hidden" style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
+                            <button id="t1-model-inline-btn" class="text-btn primary-text hidden" style="color: #10b981;">Below</button>
+                            <button id="t1-model-side-btn" class="text-btn primary-text hidden" style="color: #10b981;">Side</button>
+                            <button id="t1-model-popup-btn" class="text-btn primary-text hidden" style="color: #10b981;">Popup</button>
+                            <span style="color: #ccc; margin: 0 5px;">|</span>
+                            <button id="new-t1-btn" class="text-btn primary-text">Load New Prompt</button>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                        <div class="panel-content" id="t1-top-area" style="flex: 1; overflow-y: auto;">
+                            <!-- Random Mode -->
+                            <div id="t1-random-mode">
+                                <p id="t1-prompt-text" class="prompt-text">You should spend about 20 minutes on this task.</p>
+                                <p id="t1-specific-prompt" class="prompt-text bold"></p>
+                                <div class="chart-container">
+                                    <canvas id="t1-chart"></canvas>
+                                    <div id="t1-html-diagram" class="hidden html-diagram-container"></div>
+                                </div>
+                            </div>
+                            <!-- Custom Mode -->
+                            <div id="t1-custom-mode" class="hidden">
+                                <textarea id="t1-custom-prompt" class="custom-input" placeholder="Type or paste your Task 1 prompt here..."></textarea>
+                                <div class="custom-upload-area">
+                                    <label for="t1-custom-upload" class="upload-label">Upload Chart/Image</label>
+                                    <input type="file" id="t1-custom-upload" accept="image/*" class="hidden" />
+                                </div>
+                                <div class="custom-preview-container">
+                                    <img id="t1-custom-preview" class="hidden custom-preview" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Horizontal Splitter for Inline Model -->
+                        <div class="h-splitter hidden" id="t1-h-splitter"></div>
+                        
+                        <!-- Inline Model Content -->
+                        <div id="t1-inline-model-area" class="hidden" style="height: 35%; overflow-y: auto; background-color: #fafafa; padding: 25px; border-top: 1px solid #ddd;">
+                            <h3 style="color: #10b981; margin-bottom: 15px;">Band 9 Model Answer</h3>
+                            <div id="t1-inline-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Draggable Splitter -->
+                <!-- Vertical Splitter 1 -->
+                <div class="splitter" id="t1-v-splitter-1"></div>
+
+                <!-- Middle Panel (Side View Model Answer) -->
+                <div class="panel middle-panel hidden" id="t1-middle-panel">
+                    <div style="padding: 25px; height: 100%; overflow-y: auto;">
+                        <h3 style="color: #10b981; margin-bottom: 15px;">Band 9 Model Answer</h3>
+                        <div id="t1-side-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                    </div>
+                </div>
+
+                <!-- Vertical Splitter 2 -->
+                <div class="splitter hidden" id="t1-v-splitter-2"></div>
+
+                <!-- Right Panel (Answer Area) -->
+                <div class="panel right-panel" id="t1-right-panel">
+                    <div class="answer-wrapper">
+                        <textarea id="t1-answer" class="exam-textarea" placeholder="Write your answer here..."></textarea>
+                    </div>
+                    <div class="word-count-bar">
+                        <span class="word-count" id="t1-word-count">Word count: 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TASK 2 SECTION -->
+        <div id="task2-section" class="task-section hidden">
+            <div class="split-container">
+                <!-- Left Panel: Question -->
+                <div class="panel left-panel" id="t2-left-panel">
+                    <div class="panel-header exam-panel-header">
+                        <h2>Writing Task 2</h2>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="t2-model-label" class="hidden" style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
+                            <button id="t2-model-inline-btn" class="text-btn primary-text hidden" style="color: #10b981;">Below</button>
+                            <button id="t2-model-side-btn" class="text-btn primary-text hidden" style="color: #10b981;">Side</button>
+                            <button id="t2-model-popup-btn" class="text-btn primary-text hidden" style="color: #10b981;">Popup</button>
+                            <span style="color: #ccc; margin: 0 5px;">|</span>
+                            <button id="new-t2-btn" class="text-btn primary-text">Load New Prompt</button>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                        <div class="panel-content" id="t2-top-area" style="flex: 1; overflow-y: auto;">
+                            <!-- Random Mode -->
+                            <div id="t2-random-mode">
+                                <p id="t2-prompt-text" class="prompt-text" style="margin-bottom: 25px;">You should spend about 40 minutes on this task.</p>
+                                <div class="task2-box" style="margin-bottom: 30px; padding: 25px;">
+                                    <p id="t2-specific-prompt" class="prompt-text bold" style="margin-bottom: 0;"></p>
+                                </div>
+                                <p class="prompt-text instructions" style="margin-top: 20px;">Give reasons for your answer and include any relevant examples from your own knowledge or experience.<br><br>Write at least 250 words.</p>
+                            </div>
+                            <!-- Custom Mode -->
+                            <div id="t2-custom-mode" class="hidden">
+                                <textarea id="t2-custom-prompt" class="custom-input task2-custom" placeholder="Type or paste your Task 2 prompt here..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Horizontal Splitter for Inline Model -->
+                        <div class="h-splitter hidden" id="t2-h-splitter"></div>
+                        
+                        <!-- Inline Model Content -->
+                        <div id="t2-inline-model-area" class="hidden" style="height: 40%; overflow-y: auto; background-color: #fafafa; padding: 25px; border-top: 1px solid #ddd;">
+                            <h3 style="color: #10b981; margin-bottom: 15px;">Band 9 Model Answer</h3>
+                            <div id="t2-inline-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Draggable Splitter -->
+                <!-- Vertical Splitter 1 -->
+                <div class="splitter" id="t2-v-splitter-1"></div>
+
+                <!-- Middle Panel (Side View Model Answer) -->
+                <div class="panel middle-panel hidden" id="t2-middle-panel">
+                    <div style="padding: 25px; height: 100%; overflow-y: auto;">
+                        <h3 style="color: #10b981; margin-bottom: 15px;">Band 9 Model Answer</h3>
+                        <div id="t2-side-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                    </div>
+                </div>
+
+                <!-- Vertical Splitter 2 -->
+                <div class="splitter hidden" id="t2-v-splitter-2"></div>
+
+                <!-- Right Panel (Answer Area) -->
+                <div class="panel right-panel" id="t2-right-panel">
+                    <div class="answer-wrapper">
+                        <textarea id="t2-answer" class="exam-textarea" placeholder="Write your answer here..."></textarea>
+                    </div>
+                    <div class="word-count-bar">
+                        <span class="word-count" id="t2-word-count">Word count: 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <footer class="bottom-nav">
+        <div class="nav-buttons">
+            <button class="nav-btn active" id="nav-part1">
+                <span class="part-number">Part 1</span>
+            </button>
+            <button class="nav-btn" id="nav-part2">
+                <span class="part-number">Part 2</span>
+            </button>
+        </div>
+        <button id="submit-btn" class="submit-exam-btn">→</button>
+    </footer>
+
+    <!-- Submit Modal -->
+    <div id="submit-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <h2 id="modal-title">End of Test</h2>
+            <p id="summary-text"></p>
+            <div class="modal-actions">
+                <button id="download-btn" class="btn primary">Download Essays (.txt)</button>
+                <button id="close-modal-btn" class="btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model Answer Modal -->
+    <div id="model-modal" class="modal hidden">
+        <div class="modal-overlay" id="model-overlay"></div>
+        <div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto; text-align: left;">
+            <h2 style="color: #10b981; margin-bottom: 20px; text-align: center;">Band 9 Model Answer</h2>
+            <div id="model-answer-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+            <div class="modal-actions" style="margin-top: 30px;">
+                <button id="close-model-btn" class="btn">Close Answer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Logic -->
+    <script src="questions.js"></script>
+    <script src="questions2.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
