@@ -7,7 +7,7 @@
     --exam-dark-bar: #334155;
     --left-panel-width: 45%;
     --middle-panel-width: 25%;
-    --base-font-size: 14.5px;
+    --base-font-size: 13.5px;
     --exam-black: #1a1a1a;
     --exam-dark-grey: #333333;
     --exam-white: #ffffff;
@@ -139,22 +139,46 @@ body, html {
     justify-content: flex-end;
 }
 
-.icon-btn {
-    background: transparent;
+.modern-icon-btn {
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: 1px solid #555;
-    border-radius: 3px;
-    width: 32px;
-    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
-.icon-btn:hover {
-    background: #333;
+.modern-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.modern-btn {
+    background: var(--exam-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0 16px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.modern-btn:hover {
+    background: var(--exam-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 /* -------------------------------------

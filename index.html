@@ -12,8 +12,11 @@
     <!-- Real IELTS Exam Top Bar -->
     <header class="exam-top-bar">
         <div class="top-bar-left">
-            <span class="candidate-info">Candidate Name: <strong>Practice Mode</strong></span>
-            <span class="candidate-info">Candidate Number: <strong>999999</strong></span>
+            <div style="font-size: 1.4rem; font-weight: bold; color: #fff; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px;">
+                <span style="background: var(--exam-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 1rem;">IELTS</span>
+                Writing Simulator
+            </div>
+            <div style="font-size: 0.85rem; color: #aaa; margin-top: 2px;">Academic Training Mode</div>
         </div>
         <div class="top-bar-center">
             <div class="timer-wrapper">
@@ -32,10 +35,19 @@
             </div>
         </div>
         <div class="top-bar-right">
-            <button id="font-decrease" class="icon-btn" title="Decrease Font Size">A-</button>
-            <button id="font-increase" class="icon-btn" title="Increase Font Size">A+</button>
-            <button id="help-btn" class="icon-btn" title="Help">?</button>
-            <button id="settings-btn" class="icon-btn" style="width: auto; padding: 0 10px;" title="Toggle Custom Mode">⚙ Custom Mode</button>
+            <button class="modern-icon-btn" id="font-decrease" title="Decrease font size">
+                <span>A-</span>
+            </button>
+            <button class="modern-icon-btn" id="font-increase" title="Increase font size">
+                <span>A+</span>
+            </button>
+            <button class="modern-icon-btn" id="help-btn" title="Help">
+                <span>?</span>
+            </button>
+            <button class="modern-btn" id="settings-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                Custom Mode
+            </button>
         </div>
     </header>
 
