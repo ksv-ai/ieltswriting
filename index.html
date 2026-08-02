@@ -12,11 +12,11 @@
     <!-- Real IELTS Exam Top Bar -->
     <header class="exam-top-bar">
         <div class="top-bar-left">
-            <div style="font-size: 1.4rem; font-weight: bold; color: #fff; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px;">
+            <div style="font-size: 1.4rem; font-weight: bold; color: var(--exam-text); letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px;">
                 <span style="background: var(--exam-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 1rem;">IELTS</span>
                 Writing Simulator
             </div>
-            <div style="font-size: 0.85rem; color: #aaa; margin-top: 2px;">Academic Training Mode</div>
+            <div style="font-size: 0.85rem; color: #666; margin-top: 2px;">Academic Training Mode</div>
         </div>
         <div class="top-bar-center">
             <div class="timer-wrapper">
@@ -65,7 +65,6 @@
                             <span id="t1-model-label" class="hidden" style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
                             <button id="t1-model-inline-btn" class="text-btn primary-text hidden" style="color: #10b981;">Below</button>
                             <button id="t1-model-side-btn" class="text-btn primary-text hidden" style="color: #10b981;">Side</button>
-                            <button id="t1-model-popup-btn" class="text-btn primary-text hidden" style="color: #10b981;">Popup</button>
                             <span style="color: #ccc; margin: 0 5px;">|</span>
                             <button id="new-t1-btn" class="text-btn primary-text">Load New Prompt</button>
                         </div>
@@ -91,6 +90,7 @@
                                 <div class="custom-preview-container">
                                     <img id="t1-custom-preview" class="hidden custom-preview" />
                                 </div>
+                                <textarea id="t1-custom-model" class="custom-input" style="margin-top: 15px;" placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
                             </div>
                         </div>
                         
@@ -143,7 +143,6 @@
                             <span id="t2-model-label" class="hidden" style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
                             <button id="t2-model-inline-btn" class="text-btn primary-text hidden" style="color: #10b981;">Below</button>
                             <button id="t2-model-side-btn" class="text-btn primary-text hidden" style="color: #10b981;">Side</button>
-                            <button id="t2-model-popup-btn" class="text-btn primary-text hidden" style="color: #10b981;">Popup</button>
                             <span style="color: #ccc; margin: 0 5px;">|</span>
                             <button id="new-t2-btn" class="text-btn primary-text">Load New Prompt</button>
                         </div>
@@ -161,6 +160,7 @@
                             <!-- Custom Mode -->
                             <div id="t2-custom-mode" class="hidden">
                                 <textarea id="t2-custom-prompt" class="custom-input task2-custom" placeholder="Type or paste your Task 2 prompt here..."></textarea>
+                                <textarea id="t2-custom-model" class="custom-input task2-custom" style="margin-top: 15px;" placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
                             </div>
                         </div>
                         
@@ -217,30 +217,39 @@
         <button id="submit-btn" class="submit-exam-btn">→</button>
     </footer>
 
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal hidden">
+        <div class="modal-overlay" id="help-overlay"></div>
+        <div class="modal-content" style="max-width: 600px; text-align: left; overflow-y: auto; max-height: 85vh;">
+            <h2 style="color: var(--exam-blue); margin-bottom: 20px; border-bottom: 2px solid var(--exam-light-grey); padding-bottom: 10px;">How to Use the Simulator</h2>
+            <div style="line-height: 1.6; color: #444;">
+                <p><strong>1. Standard Practice:</strong> By default, you'll receive random prompts for Task 1 and Task 2. Type your essay in the right panel. The word counter updates live.</p>
+                <p><strong>2. Custom Mode:</strong> Click the "Custom Mode" button (top right) to paste your own prompts or even your own Band 9 model answers for practice.</p>
+                <p><strong>3. Band 9 Model Answers:</strong> If a Band 9 answer is available for the current prompt, use the "Below" or "Side" buttons to reveal it and study the structure.</p>
+                <p><strong>4. Timer:</strong> Click on the time (e.g., 60:00) to adjust the starting time. The timer turns red when less than 5 minutes remain.</p>
+                <p><strong>5. Font Size:</strong> Use the <strong>A-</strong> and <strong>A+</strong> buttons to resize the text to your preference.</p>
+            </div>
+            <div class="modal-actions" style="margin-top: 25px;">
+                <button id="close-help-btn" class="btn primary">Got it!</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Submit Modal -->
     <div id="submit-modal" class="modal hidden">
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <h2 id="modal-title">End of Test</h2>
             <p id="summary-text"></p>
-            <div class="modal-actions">
-                <button id="download-btn" class="btn primary">Download Essays (.txt)</button>
+            <div class="modal-actions" style="margin-top: 25px; gap: 10px;">
+                <button id="download-btn" class="btn primary">Download (.txt)</button>
+                <button id="download-doc-btn" class="btn primary">Download (.doc)</button>
                 <button id="close-modal-btn" class="btn">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Model Answer Modal -->
-    <div id="model-modal" class="modal hidden">
-        <div class="modal-overlay" id="model-overlay"></div>
-        <div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto; text-align: left;">
-            <h2 style="color: #10b981; margin-bottom: 20px; text-align: center;">Band 9 Model Answer</h2>
-            <div id="model-answer-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
-            <div class="modal-actions" style="margin-top: 30px;">
-                <button id="close-model-btn" class="btn">Close Answer</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Data & Logic -->
     <script src="questions.js"></script>

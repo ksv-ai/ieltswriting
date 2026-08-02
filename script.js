@@ -15,6 +15,7 @@ const timerSaveBtn = document.getElementById('timer-save');
 const toggleTimeBtn = document.getElementById('toggle-time-btn');
 const fontIncreaseBtn = document.getElementById('font-increase');
 const fontDecreaseBtn = document.getElementById('font-decrease');
+const helpBtn = document.getElementById('help-btn');
 const settingsBtn = document.getElementById('settings-btn');
 
 // Sections
@@ -37,7 +38,6 @@ const newT1Btn = document.getElementById('new-t1-btn');
 const t1ModelLabel = document.getElementById('t1-model-label');
 const t1ModelInlineBtn = document.getElementById('t1-model-inline-btn');
 const t1ModelSideBtn = document.getElementById('t1-model-side-btn');
-const t1ModelPopupBtn = document.getElementById('t1-model-popup-btn');
 const t1HSplitter = document.getElementById('t1-h-splitter');
 const t1InlineModelArea = document.getElementById('t1-inline-model-area');
 const t1InlineModelText = document.getElementById('t1-inline-model-text');
@@ -55,7 +55,6 @@ const newT2Btn = document.getElementById('new-t2-btn');
 const t2ModelLabel = document.getElementById('t2-model-label');
 const t2ModelInlineBtn = document.getElementById('t2-model-inline-btn');
 const t2ModelSideBtn = document.getElementById('t2-model-side-btn');
-const t2ModelPopupBtn = document.getElementById('t2-model-popup-btn');
 const t2HSplitter = document.getElementById('t2-h-splitter');
 const t2InlineModelArea = document.getElementById('t2-inline-model-area');
 const t2InlineModelText = document.getElementById('t2-inline-model-text');
@@ -71,22 +70,28 @@ const t2RandomMode = document.getElementById('t2-random-mode');
 const t2CustomMode = document.getElementById('t2-custom-mode');
 const t1CustomUpload = document.getElementById('t1-custom-upload');
 const t1CustomPreview = document.getElementById('t1-custom-preview');
+const t1CustomModel = document.getElementById('t1-custom-model');
+const t2CustomModel = document.getElementById('t2-custom-model');
 let isCustomMode = false;
 
 // Modal
 const submitModal = document.getElementById('submit-modal');
 const summaryText = document.getElementById('summary-text');
 const downloadBtn = document.getElementById('download-btn');
+const downloadDocBtn = document.getElementById('download-doc-btn');
 const closeModalBtn = document.getElementById('close-modal-btn');
 const modalTitle = document.getElementById('modal-title');
 
-const modelModal = document.getElementById('model-modal');
-const modelAnswerText = document.getElementById('model-answer-text');
-const closeModelBtn = document.getElementById('close-model-btn');
-const modelOverlay = document.getElementById('model-overlay');
+const helpModal = document.getElementById('help-modal');
+const closeHelpBtn = document.getElementById('close-help-btn');
+const helpOverlay = document.getElementById('help-overlay');
+
+
 
 let currentT1Model = null;
 let currentT2Model = null;
+let randomT1Model = null;
+let randomT2Model = null;
 
 
 // --- Initialization ---
@@ -151,19 +156,28 @@ function setupEventListeners() {
     settingsBtn.addEventListener('click', () => {
         isCustomMode = !isCustomMode;
         if (isCustomMode) {
+            settingsBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l-3 3"></path></svg> Random Mode`;
             t1RandomMode.classList.add('hidden');
             t1CustomMode.classList.remove('hidden');
             t2RandomMode.classList.add('hidden');
             t2CustomMode.classList.remove('hidden');
             newT1Btn.classList.add('hidden');
             newT2Btn.classList.add('hidden');
+            
+            // Switch models to custom
+            updateCustomModels();
         } else {
+            settingsBtn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Custom Mode`;
             t1RandomMode.classList.remove('hidden');
             t1CustomMode.classList.add('hidden');
             t2RandomMode.classList.remove('hidden');
             t2CustomMode.classList.add('hidden');
             newT1Btn.classList.remove('hidden');
             newT2Btn.classList.remove('hidden');
+            
+            // Revert models to random
+            setT1Model(randomT1Model);
+            setT2Model(randomT2Model);
         }
     });
 
@@ -181,6 +195,25 @@ function setupEventListeners() {
             t1CustomPreview.classList.add('hidden');
             t1CustomPreview.src = '';
         }
+    });
+    
+    // Help Button
+    helpBtn.addEventListener('click', () => {
+        helpModal.classList.remove('hidden');
+    });
+    closeHelpBtn.addEventListener('click', () => {
+        helpModal.classList.add('hidden');
+    });
+    helpOverlay.addEventListener('click', () => {
+        helpModal.classList.add('hidden');
+    });
+    
+    // Custom Model Inputs
+    t1CustomModel.addEventListener('input', () => {
+        if (isCustomMode) updateCustomModels();
+    });
+    t2CustomModel.addEventListener('input', () => {
+        if (isCustomMode) updateCustomModels();
     });
 
     // New Questions
@@ -215,22 +248,9 @@ function setupEventListeners() {
     submitBtn.addEventListener('click', submitExam);
     closeModalBtn.addEventListener('click', () => submitModal.classList.add('hidden'));
     downloadBtn.addEventListener('click', downloadOutput);
+    downloadDocBtn.addEventListener('click', downloadOutputDoc);
 
-    // Model Answers Popups
-    t1ModelPopupBtn.addEventListener('click', () => {
-        if (currentT1Model) {
-            modelAnswerText.textContent = currentT1Model;
-            modelModal.classList.remove('hidden');
-        }
-    });
-    t2ModelPopupBtn.addEventListener('click', () => {
-        if (currentT2Model) {
-            modelAnswerText.textContent = currentT2Model;
-            modelModal.classList.remove('hidden');
-        }
-    });
-    closeModelBtn.addEventListener('click', () => modelModal.classList.add('hidden'));
-    modelOverlay.addEventListener('click', () => modelModal.classList.add('hidden'));
+
 
     // Inline Model Toggles (Below View)
     t1ModelInlineBtn.addEventListener('click', () => {
@@ -325,35 +345,69 @@ function switchPart(part) {
     }
 }
 
+// --- Custom Model Setters ---
+function updateCustomModels() {
+    setT1Model(t1CustomModel.value.trim() || null);
+    setT2Model(t2CustomModel.value.trim() || null);
+}
+
+function setT1Model(modelText) {
+    currentT1Model = modelText;
+    if (currentT1Model) {
+        t1ModelLabel.classList.remove('hidden');
+        t1ModelInlineBtn.classList.remove('hidden');
+        t1ModelSideBtn.classList.remove('hidden');
+        t1InlineModelText.textContent = currentT1Model;
+        t1SideModelText.textContent = currentT1Model;
+    } else {
+        t1ModelLabel.classList.add('hidden');
+        t1ModelInlineBtn.classList.add('hidden');
+        t1ModelSideBtn.classList.add('hidden');
+        // Hide areas
+        t1InlineModelArea.classList.add('hidden');
+        t1HSplitter.classList.add('hidden');
+        t1MiddlePanel.classList.add('hidden');
+        t1VSplitter2.classList.add('hidden');
+        t1ModelInlineBtn.textContent = "Below";
+        t1ModelSideBtn.textContent = "Side";
+        t1InlineModelText.textContent = '';
+        t1SideModelText.textContent = '';
+    }
+}
+
+function setT2Model(modelText) {
+    currentT2Model = modelText;
+    if (currentT2Model) {
+        t2ModelLabel.classList.remove('hidden');
+        t2ModelInlineBtn.classList.remove('hidden');
+        t2ModelSideBtn.classList.remove('hidden');
+        t2InlineModelText.textContent = currentT2Model;
+        t2SideModelText.textContent = currentT2Model;
+    } else {
+        t2ModelLabel.classList.add('hidden');
+        t2ModelInlineBtn.classList.add('hidden');
+        t2ModelSideBtn.classList.add('hidden');
+        // Hide areas
+        t2InlineModelArea.classList.add('hidden');
+        t2HSplitter.classList.add('hidden');
+        t2MiddlePanel.classList.add('hidden');
+        t2VSplitter2.classList.add('hidden');
+        t2ModelInlineBtn.textContent = "Below";
+        t2ModelSideBtn.textContent = "Side";
+        t2InlineModelText.textContent = '';
+        t2SideModelText.textContent = '';
+    }
+}
+
 // --- Content Loading ---
 function loadRandomTask1() {
     if (typeof IELTS_QUESTIONS === 'undefined') return;
     const q = IELTS_QUESTIONS[Math.floor(Math.random() * IELTS_QUESTIONS.length)];
     t1SpecificPrompt.textContent = q.promptText;
 
-    if (q.modelAnswer) {
-        currentT1Model = q.modelAnswer;
-        t1InlineModelText.textContent = currentT1Model;
-        t1SideModelText.textContent = currentT1Model;
-        t1ModelLabel.classList.remove('hidden');
-        t1ModelInlineBtn.classList.remove('hidden');
-        t1ModelSideBtn.classList.remove('hidden');
-        t1ModelPopupBtn.classList.remove('hidden');
-    } else {
-        currentT1Model = null;
-        t1InlineModelText.textContent = '';
-        t1SideModelText.textContent = '';
-        t1ModelLabel.classList.add('hidden');
-        t1ModelInlineBtn.classList.add('hidden');
-        t1ModelSideBtn.classList.add('hidden');
-        t1ModelPopupBtn.classList.add('hidden');
-        // Hide areas
-        t1InlineModelArea.classList.add('hidden');
-        t1HSplitter.classList.add('hidden');
-        t1ModelInlineBtn.textContent = "Below";
-        t1MiddlePanel.classList.add('hidden');
-        t1VSplitter2.classList.add('hidden');
-        t1ModelSideBtn.textContent = "Side";
+    randomT1Model = q.modelAnswer || null;
+    if (!isCustomMode) {
+        setT1Model(randomT1Model);
     }
 
     if (currentChart) {
@@ -377,29 +431,9 @@ function loadRandomTask2() {
     const q = IELTS_QUESTIONS_2[Math.floor(Math.random() * IELTS_QUESTIONS_2.length)];
     t2SpecificPrompt.textContent = q.promptText;
 
-    if (q.modelAnswer) {
-        currentT2Model = q.modelAnswer;
-        t2InlineModelText.textContent = currentT2Model;
-        t2SideModelText.textContent = currentT2Model;
-        t2ModelLabel.classList.remove('hidden');
-        t2ModelInlineBtn.classList.remove('hidden');
-        t2ModelSideBtn.classList.remove('hidden');
-        t2ModelPopupBtn.classList.remove('hidden');
-    } else {
-        currentT2Model = null;
-        t2InlineModelText.textContent = '';
-        t2SideModelText.textContent = '';
-        t2ModelLabel.classList.add('hidden');
-        t2ModelInlineBtn.classList.add('hidden');
-        t2ModelSideBtn.classList.add('hidden');
-        t2ModelPopupBtn.classList.add('hidden');
-        // Hide areas
-        t2InlineModelArea.classList.add('hidden');
-        t2HSplitter.classList.add('hidden');
-        t2ModelInlineBtn.textContent = "Below";
-        t2MiddlePanel.classList.add('hidden');
-        t2VSplitter2.classList.add('hidden');
-        t2ModelSideBtn.textContent = "Side";
+    randomT2Model = q.modelAnswer || null;
+    if (!isCustomMode) {
+        setT2Model(randomT2Model);
     }
 }
 
@@ -471,26 +505,62 @@ function submitExam() {
 }
 
 function downloadOutput() {
-    let content = "=== IELTS WRITING PRACTICE ===\n\n";
-    content += "--- TASK 1 ---\n";
-    content += isCustomMode ? document.getElementById('t1-custom-prompt').value : t1SpecificPrompt.textContent;
-    content += "\n\nAnswer:\n";
-    content += t1Answer.value + "\n\n\n";
-
-    content += "--- TASK 2 ---\n";
-    content += isCustomMode ? document.getElementById('t2-custom-prompt').value : t2SpecificPrompt.textContent;
-    content += "\n\nAnswer:\n";
-    content += t2Answer.value + "\n";
+    const t1Text = t1Answer.value;
+    const t2Text = t2Answer.value;
+    
+    let content = "IELTS WRITING EXAM PRACTICE\n";
+    content += "Date: " + new Date().toLocaleString() + "\n";
+    content += "--------------------------------------\n\n";
+    content += "TASK 1\n";
+    content += t1Text + "\n\n";
+    content += "--------------------------------------\n\n";
+    content += "TASK 2\n";
+    content += t2Text + "\n";
 
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    
     const a = document.createElement('a');
     a.href = url;
-    a.download = `IELTS_Writing_Full_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
+    a.download = `IELTS_Writing_Practice_${new Date().toISOString().slice(0,10)}.txt`;
     a.click();
-    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function downloadOutputDoc() {
+    const t1Text = t1Answer.value;
+    const t2Text = t2Answer.value;
+
+    const content = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+            <meta charset='utf-8'>
+            <title>IELTS Essays</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; }
+                h1 { color: #005eb8; font-size: 24px; }
+                h2 { color: #333; font-size: 18px; margin-top: 20px; border-bottom: 1px solid #ccc; }
+                p { font-size: 14px; white-space: pre-wrap; }
+            </style>
+        </head>
+        <body>
+            <h1>IELTS Writing Practice</h1>
+            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+            
+            <h2>Task 1</h2>
+            <p>${t1Text.replace(/\n/g, '<br>')}</p>
+            
+            <h2>Task 2</h2>
+            <p>${t2Text.replace(/\n/g, '<br>')}</p>
+        </body>
+        </html>
+    `;
+
+    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `IELTS_Writing_Practice_${new Date().toISOString().slice(0,10)}.doc`;
+    a.click();
     URL.revokeObjectURL(url);
 }
 
