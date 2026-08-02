@@ -31,6 +31,26 @@ const submitBtn = document.getElementById('submit-btn');
 const t1SpecificPrompt = document.getElementById('t1-specific-prompt');
 const t1ChartCanvas = document.getElementById('t1-chart');
 const t1HtmlDiagram = document.getElementById('t1-html-diagram');
+
+// Upgrade Chart.js global defaults for a more professional, compact look
+if (typeof Chart !== 'undefined') {
+    Chart.defaults.font.family = "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+    Chart.defaults.font.size = 11;
+    Chart.defaults.color = '#475569';
+    Chart.defaults.scale.grid.color = '#f1f5f9';
+    Chart.defaults.scale.grid.borderColor = '#cbd5e1';
+    Chart.defaults.plugins.title.font.size = 13;
+    Chart.defaults.plugins.title.font.weight = 'bold';
+    Chart.defaults.plugins.title.color = '#1e293b';
+    Chart.defaults.plugins.title.padding = { top: 0, bottom: 10 };
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.boxWidth = 8;
+    Chart.defaults.plugins.legend.position = 'bottom';
+    Chart.defaults.maintainAspectRatio = true;
+    Chart.defaults.aspectRatio = 1.5;
+    Chart.defaults.layout = { padding: 0 };
+}
+
 const t1Answer = document.getElementById('t1-answer');
 const t1WordCount = document.getElementById('t1-word-count');
 const newT1Btn = document.getElementById('new-t1-btn');
@@ -346,23 +366,58 @@ function switchPart(part) {
 }
 
 // --- Custom Model Setters ---
+function formatModelText(text) {
+    if (!text) return '';
+    let formatted = text
+        .replace(/Introduction:/g, '<strong>Introduction:</strong>')
+        .replace(/Overview:/g, '<strong>Overview:</strong>')
+        .replace(/Body Paragraph (\d+):/g, '<strong>Body Paragraph $1:</strong>')
+        .replace(/Conclusion:/g, '<strong>Conclusion:</strong>')
+        .replace(/Main Points \(Planning Phase\):/g, '<strong style="color: #16a34a; display: block; margin-top: 10px;">Main Points (Planning Phase):</strong>');
+    return formatted;
+}
+
+function calculateModelWordCount(text) {
+    if (!text) return 0;
+    // Exclude labels from word count
+    let textForCount = text
+        .replace(/Introduction:\n?/g, '')
+        .replace(/Overview:\n?/g, '')
+        .replace(/Conclusion:\n?/g, '')
+        .replace(/Body Paragraph \d+:\n?/g, '')
+        .replace(/Main Points \(Planning Phase\):[\s\S]*/, ''); // Exclude planning phase entirely from count
+    let words = textForCount.match(/\S+/g);
+    return words ? words.length : 0;
+}
+
 function updateCustomModels() {
     setT1Model(t1CustomModel.value.trim() || null);
     setT2Model(t2CustomModel.value.trim() || null);
 }
 
 function setT1Model(modelText) {
+    // Strip out the statically generated Word Count line if it exists
+    if (modelText) {
+        modelText = modelText.replace(/\\n\\nWord Count: \d+ words/g, '');
+        modelText = modelText.replace(/\n\nWord Count: \d+ words/g, '');
+    }
+    
     currentT1Model = modelText;
     if (currentT1Model) {
         t1ModelLabel.classList.remove('hidden');
         t1ModelInlineBtn.classList.remove('hidden');
         t1ModelSideBtn.classList.remove('hidden');
-        t1InlineModelText.textContent = currentT1Model;
-        t1SideModelText.textContent = currentT1Model;
+        t1InlineModelText.innerHTML = formatModelText(currentT1Model);
+        t1SideModelText.innerHTML = formatModelText(currentT1Model);
+        
+        let wc = calculateModelWordCount(currentT1Model);
+        document.getElementById('t1-inline-model-wc').textContent = `Word Count: ${wc} words`;
+        document.getElementById('t1-side-model-wc').textContent = `Word Count: ${wc} words`;
     } else {
         t1ModelLabel.classList.add('hidden');
         t1ModelInlineBtn.classList.add('hidden');
         t1ModelSideBtn.classList.add('hidden');
+        
         // Hide areas
         t1InlineModelArea.classList.add('hidden');
         t1HSplitter.classList.add('hidden');
@@ -370,23 +425,36 @@ function setT1Model(modelText) {
         t1VSplitter2.classList.add('hidden');
         t1ModelInlineBtn.textContent = "Below";
         t1ModelSideBtn.textContent = "Side";
-        t1InlineModelText.textContent = '';
-        t1SideModelText.textContent = '';
+        t1InlineModelText.innerHTML = '';
+        t1SideModelText.innerHTML = '';
+        document.getElementById('t1-inline-model-wc').textContent = '';
+        document.getElementById('t1-side-model-wc').textContent = '';
     }
 }
 
 function setT2Model(modelText) {
+    // Strip out the statically generated Word Count line if it exists
+    if (modelText) {
+        modelText = modelText.replace(/\\n\\nWord Count: \d+ words/g, '');
+        modelText = modelText.replace(/\n\nWord Count: \d+ words/g, '');
+    }
+    
     currentT2Model = modelText;
     if (currentT2Model) {
         t2ModelLabel.classList.remove('hidden');
         t2ModelInlineBtn.classList.remove('hidden');
         t2ModelSideBtn.classList.remove('hidden');
-        t2InlineModelText.textContent = currentT2Model;
-        t2SideModelText.textContent = currentT2Model;
+        t2InlineModelText.innerHTML = formatModelText(currentT2Model);
+        t2SideModelText.innerHTML = formatModelText(currentT2Model);
+        
+        let wc = calculateModelWordCount(currentT2Model);
+        document.getElementById('t2-inline-model-wc').textContent = `Word Count: ${wc} words`;
+        document.getElementById('t2-side-model-wc').textContent = `Word Count: ${wc} words`;
     } else {
         t2ModelLabel.classList.add('hidden');
         t2ModelInlineBtn.classList.add('hidden');
         t2ModelSideBtn.classList.add('hidden');
+        
         // Hide areas
         t2InlineModelArea.classList.add('hidden');
         t2HSplitter.classList.add('hidden');
@@ -394,8 +462,10 @@ function setT2Model(modelText) {
         t2VSplitter2.classList.add('hidden');
         t2ModelInlineBtn.textContent = "Below";
         t2ModelSideBtn.textContent = "Side";
-        t2InlineModelText.textContent = '';
-        t2SideModelText.textContent = '';
+        t2InlineModelText.innerHTML = '';
+        t2SideModelText.innerHTML = '';
+        document.getElementById('t2-inline-model-wc').textContent = '';
+        document.getElementById('t2-side-model-wc').textContent = '';
     }
 }
 
