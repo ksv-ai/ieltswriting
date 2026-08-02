@@ -36,10 +36,15 @@ const newT1Btn = document.getElementById('new-t1-btn');
 
 const t1ModelLabel = document.getElementById('t1-model-label');
 const t1ModelInlineBtn = document.getElementById('t1-model-inline-btn');
+const t1ModelSideBtn = document.getElementById('t1-model-side-btn');
 const t1ModelPopupBtn = document.getElementById('t1-model-popup-btn');
 const t1HSplitter = document.getElementById('t1-h-splitter');
 const t1InlineModelArea = document.getElementById('t1-inline-model-area');
 const t1InlineModelText = document.getElementById('t1-inline-model-text');
+const t1MiddlePanel = document.getElementById('t1-middle-panel');
+const t1SideModelText = document.getElementById('t1-side-model-text');
+const t1VSplitter1 = document.getElementById('t1-v-splitter-1');
+const t1VSplitter2 = document.getElementById('t1-v-splitter-2');
 
 // Task 2 Elements
 const t2SpecificPrompt = document.getElementById('t2-specific-prompt');
@@ -49,10 +54,15 @@ const newT2Btn = document.getElementById('new-t2-btn');
 
 const t2ModelLabel = document.getElementById('t2-model-label');
 const t2ModelInlineBtn = document.getElementById('t2-model-inline-btn');
+const t2ModelSideBtn = document.getElementById('t2-model-side-btn');
 const t2ModelPopupBtn = document.getElementById('t2-model-popup-btn');
 const t2HSplitter = document.getElementById('t2-h-splitter');
 const t2InlineModelArea = document.getElementById('t2-inline-model-area');
 const t2InlineModelText = document.getElementById('t2-inline-model-text');
+const t2MiddlePanel = document.getElementById('t2-middle-panel');
+const t2SideModelText = document.getElementById('t2-side-model-text');
+const t2VSplitter1 = document.getElementById('t2-v-splitter-1');
+const t2VSplitter2 = document.getElementById('t2-v-splitter-2');
 
 // Custom Mode Elements
 const t1RandomMode = document.getElementById('t1-random-mode');
@@ -222,29 +232,75 @@ function setupEventListeners() {
     closeModelBtn.addEventListener('click', () => modelModal.classList.add('hidden'));
     modelOverlay.addEventListener('click', () => modelModal.classList.add('hidden'));
 
-    // Inline Model Toggles
+    // Inline Model Toggles (Below View)
     t1ModelInlineBtn.addEventListener('click', () => {
         const isHidden = t1InlineModelArea.classList.contains('hidden');
         if (isHidden) {
+            // Hide Side view if open
+            t1MiddlePanel.classList.add('hidden');
+            t1VSplitter2.classList.add('hidden');
+            t1ModelSideBtn.textContent = "Side";
+
             t1InlineModelArea.classList.remove('hidden');
             t1HSplitter.classList.remove('hidden');
-            t1ModelInlineBtn.textContent = "Hide Inline";
+            t1ModelInlineBtn.textContent = "Hide Below";
         } else {
             t1InlineModelArea.classList.add('hidden');
             t1HSplitter.classList.add('hidden');
-            t1ModelInlineBtn.textContent = "Inline View";
+            t1ModelInlineBtn.textContent = "Below";
         }
     });
     t2ModelInlineBtn.addEventListener('click', () => {
         const isHidden = t2InlineModelArea.classList.contains('hidden');
         if (isHidden) {
+            // Hide Side view if open
+            t2MiddlePanel.classList.add('hidden');
+            t2VSplitter2.classList.add('hidden');
+            t2ModelSideBtn.textContent = "Side";
+
             t2InlineModelArea.classList.remove('hidden');
             t2HSplitter.classList.remove('hidden');
-            t2ModelInlineBtn.textContent = "Hide Inline";
+            t2ModelInlineBtn.textContent = "Hide Below";
         } else {
             t2InlineModelArea.classList.add('hidden');
             t2HSplitter.classList.add('hidden');
-            t2ModelInlineBtn.textContent = "Inline View";
+            t2ModelInlineBtn.textContent = "Below";
+        }
+    });
+
+    // Side Model Toggles (Middle Panel)
+    t1ModelSideBtn.addEventListener('click', () => {
+        const isHidden = t1MiddlePanel.classList.contains('hidden');
+        if (isHidden) {
+            // Hide Below view if open
+            t1InlineModelArea.classList.add('hidden');
+            t1HSplitter.classList.add('hidden');
+            t1ModelInlineBtn.textContent = "Below";
+
+            t1MiddlePanel.classList.remove('hidden');
+            t1VSplitter2.classList.remove('hidden');
+            t1ModelSideBtn.textContent = "Hide Side";
+        } else {
+            t1MiddlePanel.classList.add('hidden');
+            t1VSplitter2.classList.add('hidden');
+            t1ModelSideBtn.textContent = "Side";
+        }
+    });
+    t2ModelSideBtn.addEventListener('click', () => {
+        const isHidden = t2MiddlePanel.classList.contains('hidden');
+        if (isHidden) {
+            // Hide Below view if open
+            t2InlineModelArea.classList.add('hidden');
+            t2HSplitter.classList.add('hidden');
+            t2ModelInlineBtn.textContent = "Below";
+
+            t2MiddlePanel.classList.remove('hidden');
+            t2VSplitter2.classList.remove('hidden');
+            t2ModelSideBtn.textContent = "Hide Side";
+        } else {
+            t2MiddlePanel.classList.add('hidden');
+            t2VSplitter2.classList.add('hidden');
+            t2ModelSideBtn.textContent = "Side";
         }
     });
 }
@@ -278,19 +334,26 @@ function loadRandomTask1() {
     if (q.modelAnswer) {
         currentT1Model = q.modelAnswer;
         t1InlineModelText.textContent = currentT1Model;
+        t1SideModelText.textContent = currentT1Model;
         t1ModelLabel.classList.remove('hidden');
         t1ModelInlineBtn.classList.remove('hidden');
+        t1ModelSideBtn.classList.remove('hidden');
         t1ModelPopupBtn.classList.remove('hidden');
     } else {
         currentT1Model = null;
         t1InlineModelText.textContent = '';
+        t1SideModelText.textContent = '';
         t1ModelLabel.classList.add('hidden');
         t1ModelInlineBtn.classList.add('hidden');
+        t1ModelSideBtn.classList.add('hidden');
         t1ModelPopupBtn.classList.add('hidden');
-        // Hide inline area if it was open from a previous question
+        // Hide areas
         t1InlineModelArea.classList.add('hidden');
         t1HSplitter.classList.add('hidden');
-        t1ModelInlineBtn.textContent = "Inline View";
+        t1ModelInlineBtn.textContent = "Below";
+        t1MiddlePanel.classList.add('hidden');
+        t1VSplitter2.classList.add('hidden');
+        t1ModelSideBtn.textContent = "Side";
     }
 
     if (currentChart) {
@@ -317,19 +380,26 @@ function loadRandomTask2() {
     if (q.modelAnswer) {
         currentT2Model = q.modelAnswer;
         t2InlineModelText.textContent = currentT2Model;
+        t2SideModelText.textContent = currentT2Model;
         t2ModelLabel.classList.remove('hidden');
         t2ModelInlineBtn.classList.remove('hidden');
+        t2ModelSideBtn.classList.remove('hidden');
         t2ModelPopupBtn.classList.remove('hidden');
     } else {
         currentT2Model = null;
         t2InlineModelText.textContent = '';
+        t2SideModelText.textContent = '';
         t2ModelLabel.classList.add('hidden');
         t2ModelInlineBtn.classList.add('hidden');
+        t2ModelSideBtn.classList.add('hidden');
         t2ModelPopupBtn.classList.add('hidden');
-        // Hide inline area if it was open from a previous question
+        // Hide areas
         t2InlineModelArea.classList.add('hidden');
         t2HSplitter.classList.add('hidden');
-        t2ModelInlineBtn.textContent = "Inline View";
+        t2ModelInlineBtn.textContent = "Below";
+        t2MiddlePanel.classList.add('hidden');
+        t2VSplitter2.classList.add('hidden');
+        t2ModelSideBtn.textContent = "Side";
     }
 }
 
@@ -426,25 +496,10 @@ function downloadOutput() {
 
 // --- Splitter Logic ---
 function setupSplitters() {
-    const splitters = [document.getElementById('splitter-1'), document.getElementById('splitter-2')];
-    let isDragging = false;
-
-    splitters.forEach(splitter => {
-        if(!splitter) return;
-        splitter.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            splitter.classList.add('active');
-            document.body.style.cursor = 'col-resize';
-            e.preventDefault(); 
-        });
-    });
-
-    // Horizontal Splitters Logic
     const hSplitters = [
         { el: t1HSplitter, area: t1InlineModelArea, container: document.getElementById('t1-left-panel') },
         { el: t2HSplitter, area: t2InlineModelArea, container: document.getElementById('t2-left-panel') }
     ];
-
     let activeHSplitter = null;
 
     hSplitters.forEach(s => {
@@ -457,42 +512,64 @@ function setupSplitters() {
         });
     });
 
+    const vSplitters = [
+        { el: t1VSplitter1, type: 'left' },
+        { el: t2VSplitter1, type: 'left' },
+        { el: t1VSplitter2, type: 'middle' },
+        { el: t2VSplitter2, type: 'middle' }
+    ];
+    let activeVSplitter = null;
+
+    vSplitters.forEach(s => {
+        if (!s.el) return;
+        s.el.addEventListener('mousedown', (e) => {
+            activeVSplitter = s;
+            s.el.classList.add('active');
+            document.body.style.cursor = 'col-resize';
+            e.preventDefault();
+        });
+    });
+
     document.addEventListener('mousemove', (e) => {
         // Vertical splitters
-        if (isDragging) {
+        if (activeVSplitter) {
             const containerWidth = document.body.clientWidth;
-            let newLeftWidth = (e.clientX / containerWidth) * 100;
-            if (newLeftWidth < 20) newLeftWidth = 20;
-            if (newLeftWidth > 80) newLeftWidth = 80;
-            document.documentElement.style.setProperty('--left-panel-width', `${newLeftWidth}%`);
+            if (activeVSplitter.type === 'left') {
+                let newLeftWidth = (e.clientX / containerWidth) * 100;
+                if (newLeftWidth < 15) newLeftWidth = 15;
+                if (newLeftWidth > 70) newLeftWidth = 70;
+                document.documentElement.style.setProperty('--left-panel-width', `${newLeftWidth}%`);
+            } else if (activeVSplitter.type === 'middle') {
+                let leftWidth = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--left-panel-width')) || 45;
+                let newMiddleWidth = (e.clientX / containerWidth) * 100 - leftWidth;
+                if (newMiddleWidth < 10) newMiddleWidth = 10;
+                if (newMiddleWidth > 60) newMiddleWidth = 60;
+                document.documentElement.style.setProperty('--middle-panel-width', `${newMiddleWidth}%`);
+            }
         }
 
         // Horizontal splitters
         if (activeHSplitter) {
             const containerRect = activeHSplitter.container.getBoundingClientRect();
-            // Calculate height from bottom
             const newHeight = containerRect.bottom - e.clientY;
             const containerHeight = containerRect.height;
             let heightPercent = (newHeight / containerHeight) * 100;
-            
-            // Constraints
             if (heightPercent < 15) heightPercent = 15;
             if (heightPercent > 75) heightPercent = 75;
-            
             activeHSplitter.area.style.height = `${heightPercent}%`;
         }
     });
 
     document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            splitters.forEach(s => s && s.classList.remove('active'));
-            if (!activeHSplitter) document.body.style.cursor = 'default';
+        if (activeVSplitter) {
+            activeVSplitter.el.classList.remove('active');
+            activeVSplitter = null;
+            document.body.style.cursor = 'default';
         }
         if (activeHSplitter) {
             activeHSplitter.el.classList.remove('active');
             activeHSplitter = null;
-            if (!isDragging) document.body.style.cursor = 'default';
+            document.body.style.cursor = 'default';
         }
     });
 }

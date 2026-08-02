@@ -186,6 +186,8 @@ body, html {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
 .left-panel {
     flex: 0 0 var(--left-panel-width);
     background-color: var(--exam-white);
@@ -369,7 +371,6 @@ canvas {
     outline: none;
     background-color: var(--exam-white);
     /* Mimic yellow highlight when selecting text */
-    selection-background-color: #fff2a8;
 }
 .exam-textarea::selection {
     background: #fff2a8;
