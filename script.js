@@ -183,7 +183,7 @@ function setupEventListeners() {
             t2CustomMode.classList.remove('hidden');
             newT1Btn.classList.add('hidden');
             newT2Btn.classList.add('hidden');
-            
+
             // Switch models to custom
             updateCustomModels();
         } else {
@@ -194,7 +194,7 @@ function setupEventListeners() {
             t2CustomMode.classList.add('hidden');
             newT1Btn.classList.remove('hidden');
             newT2Btn.classList.remove('hidden');
-            
+
             // Revert models to random
             setT1Model(randomT1Model);
             setT2Model(randomT2Model);
@@ -216,7 +216,7 @@ function setupEventListeners() {
             t1CustomPreview.src = '';
         }
     });
-    
+
     // Help Button
     helpBtn.addEventListener('click', () => {
         helpModal.classList.remove('hidden');
@@ -227,7 +227,7 @@ function setupEventListeners() {
     helpOverlay.addEventListener('click', () => {
         helpModal.classList.add('hidden');
     });
-    
+
     // Custom Model Inputs
     t1CustomModel.addEventListener('input', () => {
         if (isCustomMode) updateCustomModels();
@@ -403,7 +403,7 @@ function setT1Model(modelText) {
         modelText = modelText.replace(/\\n\\nWord Count: \d+ words/g, '');
         modelText = modelText.replace(/\n\nWord Count: \d+ words/g, '');
     }
-    
+
     currentT1Model = modelText;
     if (currentT1Model) {
         t1ModelLabel.classList.remove('hidden');
@@ -411,7 +411,7 @@ function setT1Model(modelText) {
         t1ModelSideBtn.classList.remove('hidden');
         t1InlineModelText.innerHTML = formatModelText(currentT1Model);
         t1SideModelText.innerHTML = formatModelText(currentT1Model);
-        
+
         let wc = calculateModelWordCount(currentT1Model);
         document.getElementById('t1-inline-model-wc').textContent = `Word Count: ${wc} words`;
         document.getElementById('t1-side-model-wc').textContent = `Word Count: ${wc} words`;
@@ -419,7 +419,7 @@ function setT1Model(modelText) {
         t1ModelLabel.classList.add('hidden');
         t1ModelInlineBtn.classList.add('hidden');
         t1ModelSideBtn.classList.add('hidden');
-        
+
         // Hide areas
         t1InlineModelArea.classList.add('hidden');
         t1HSplitter.classList.add('hidden');
@@ -440,7 +440,7 @@ function setT2Model(modelText) {
         modelText = modelText.replace(/\\n\\nWord Count: \d+ words/g, '');
         modelText = modelText.replace(/\n\nWord Count: \d+ words/g, '');
     }
-    
+
     currentT2Model = modelText;
     if (currentT2Model) {
         t2ModelLabel.classList.remove('hidden');
@@ -448,7 +448,7 @@ function setT2Model(modelText) {
         t2ModelSideBtn.classList.remove('hidden');
         t2InlineModelText.innerHTML = formatModelText(currentT2Model);
         t2SideModelText.innerHTML = formatModelText(currentT2Model);
-        
+
         let wc = calculateModelWordCount(currentT2Model);
         document.getElementById('t2-inline-model-wc').textContent = `Word Count: ${wc} words`;
         document.getElementById('t2-side-model-wc').textContent = `Word Count: ${wc} words`;
@@ -456,7 +456,7 @@ function setT2Model(modelText) {
         t2ModelLabel.classList.add('hidden');
         t2ModelInlineBtn.classList.add('hidden');
         t2ModelSideBtn.classList.add('hidden');
-        
+
         // Hide areas
         t2InlineModelArea.classList.add('hidden');
         t2HSplitter.classList.add('hidden');
@@ -514,7 +514,7 @@ function updateWordCount(textarea, displayEl, minTarget) {
     const text = textarea.value.trim();
     const words = text.length > 0 ? text.match(/\S+/g) : [];
     const count = words ? words.length : 0;
-    
+
     displayEl.textContent = `Word count: ${count}`;
     displayEl.style.color = count >= minTarget ? '#388e3c' : '#666';
     return count;
@@ -525,7 +525,7 @@ function updateTimerDisplay() {
     const mins = Math.floor(secondsRemaining / 60);
     const secs = secondsRemaining % 60;
     timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    
+
     if (secondsRemaining <= 300) { // Under 5 minutes turns red, and forces display if hidden
         timerDisplay.classList.add('danger');
         if (isTimerHidden) toggleTimeBtn.click();
@@ -539,7 +539,7 @@ function startTimer() {
     timerInterval = setInterval(() => {
         secondsRemaining--;
         updateTimerDisplay();
-        
+
         if (secondsRemaining <= 0) {
             clearInterval(timerInterval);
             isTimerRunning = false;
@@ -579,7 +579,7 @@ function submitExam() {
 function downloadOutput() {
     const t1Text = t1Answer.value;
     const t2Text = t2Answer.value;
-    
+
     let content = "IELTS WRITING EXAM PRACTICE\n";
     content += "Date: " + new Date().toLocaleString() + "\n";
     content += "--------------------------------------\n\n";
@@ -593,7 +593,7 @@ function downloadOutput() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `IELTS_Writing_Practice_${new Date().toISOString().slice(0,10)}.txt`;
+    a.download = `IELTS_Writing_Practice_${new Date().toISOString().slice(0, 10)}.txt`;
     a.click();
     URL.revokeObjectURL(url);
 }
@@ -631,7 +631,7 @@ function downloadOutputDoc() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `IELTS_Writing_Practice_${new Date().toISOString().slice(0,10)}.doc`;
+    a.download = `IELTS_Writing_Practice_${new Date().toISOString().slice(0, 10)}.doc`;
     a.click();
     URL.revokeObjectURL(url);
 }
