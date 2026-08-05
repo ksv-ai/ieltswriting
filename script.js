@@ -127,6 +127,8 @@ const closeAiResultsBtn = document.getElementById('close-ai-results-btn');
 const aiResultsOverlay = document.getElementById('ai-results-overlay');
 const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
 const aiResultsContent = document.getElementById('ai-results-content');
+const aiDownloadPdfBtn = document.getElementById('ai-download-pdf-btn');
+const aiDownloadDocBtn = document.getElementById('ai-download-doc-btn');
 
 const t1AiEvaluateBtn = document.getElementById('t1-ai-evaluate-btn');
 const t2AiEvaluateBtn = document.getElementById('t2-ai-evaluate-btn');
@@ -297,6 +299,33 @@ function setupEventListeners() {
     });
     aiResultsOverlay.addEventListener('click', () => {
         aiResultsModal.classList.add('hidden');
+    });
+
+    // AI Download Buttons
+    aiDownloadPdfBtn.addEventListener('click', () => {
+        const element = document.getElementById('ai-results-content');
+        const opt = {
+            margin:       0.5,
+            filename:     'IELTS_AI_Evaluation.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    });
+
+    aiDownloadDocBtn.addEventListener('click', () => {
+        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+        const footer = "</body></html>";
+        const sourceHTML = header + document.getElementById('ai-results-content').innerHTML + footer;
+        
+        const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+        const fileDownload = document.createElement("a");
+        document.body.appendChild(fileDownload);
+        fileDownload.href = source;
+        fileDownload.download = 'IELTS_AI_Evaluation.doc';
+        fileDownload.click();
+        document.body.removeChild(fileDownload);
     });
     
     // Evaluate Buttons
@@ -642,6 +671,8 @@ async function evaluateEssay(taskNum) {
     aiLoadingIndicator.style.display = 'block';
     aiResultsContent.style.display = 'none';
     aiResultsContent.innerHTML = '';
+    aiDownloadPdfBtn.style.display = 'none';
+    aiDownloadDocBtn.style.display = 'none';
 
     const systemPrompt = `You are an expert, strict IELTS examiner. Evaluate the user's IELTS Academic Writing Task ${taskNum} essay.
 
@@ -778,6 +809,8 @@ Do not include any markdown formatting like \`\`\`json. Just return the raw JSON
         
         aiLoadingIndicator.style.display = 'none';
         aiResultsContent.style.display = 'block';
+        aiDownloadPdfBtn.style.display = 'inline-block';
+        aiDownloadDocBtn.style.display = 'inline-block';
         
     } catch (error) {
         aiLoadingIndicator.style.display = 'none';
