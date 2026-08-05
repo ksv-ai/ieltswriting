@@ -262,7 +262,7 @@
     <!-- Saved Questions Modal -->
     <div id="saved-questions-modal" class="modal hidden">
         <div class="modal-overlay" id="saved-questions-overlay"></div>
-        <div class="modal-content" style="max-width: 600px; text-align: left; overflow-y: auto; max-height: 85vh; padding: 0;">
+        <div class="modal-content" style="max-width: 600px; text-align: left; overflow-y: auto; max-height: 85vh; padding: 0; border-radius: 8px; overflow: hidden;">
             <div style="background: var(--exam-blue); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <h2 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
@@ -270,10 +270,10 @@
                     </svg>
                     My Library
                 </h2>
-                <button id="close-saved-btn" style="background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0;">&times;</button>
+                <button id="close-saved-btn" style="background: transparent; border: none; color: white; font-size: 2rem; line-height: 1; cursor: pointer; padding: 0;">&times;</button>
             </div>
-            <div id="saved-questions-list" style="padding: 20px;">
-                <p style="color: #666; text-align: center;">No saved questions yet.</p>
+            <div id="saved-questions-list" style="padding: 24px; background: #f8fafc;">
+                <p style="color: #64748b; text-align: center; font-style: italic;">No saved questions yet.</p>
             </div>
         </div>
     </div>
