@@ -612,20 +612,20 @@ canvas {
 /* Saved Questions Styling */
 .saved-item {
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 15px;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .saved-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
     border-color: #cbd5e1;
 }
 
@@ -642,36 +642,62 @@ canvas {
 .saved-item-header strong {
     color: var(--exam-blue);
     background: #eff6ff;
-    padding: 4px 8px;
+    padding: 2px 6px;
     border-radius: 4px;
     font-weight: 600;
 }
 
 .saved-item-prompt {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--exam-text);
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.5;
+    line-height: 1.4;
     font-style: italic;
+}
+
+.star-btn {
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.star-btn:hover {
+    color: #fbbf24;
+}
+
+.star-btn.starred {
+    color: #fbbf24;
+}
+
+.star-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
 }
 
 .saved-item-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 5px;
+    gap: 8px;
+    margin-top: 0;
 }
 
 .btn-delete {
     background: transparent;
     color: #ef4444;
     border: 1px solid #fecaca;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -686,9 +712,9 @@ canvas {
     background: var(--exam-blue);
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s;

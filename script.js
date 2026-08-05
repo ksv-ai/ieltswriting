@@ -406,7 +406,8 @@ function saveCustomQuestion(taskNum) {
             promptText: promptText,
             imageSrc: imageSrc && !imageSrc.endsWith(window.location.host + '/') ? imageSrc : null,
             modelAnswer: modelAnswer,
-            date: new Date().toLocaleDateString()
+            date: new Date().toLocaleDateString(),
+            starred: false
         };
         
         questions.push(newQ);
@@ -427,7 +428,8 @@ function saveCustomQuestion(taskNum) {
             task: 2,
             promptText: promptText,
             modelAnswer: modelAnswer,
-            date: new Date().toLocaleDateString()
+            date: new Date().toLocaleDateString(),
+            starred: false
         };
         
         questions.push(newQ);
@@ -437,7 +439,7 @@ function saveCustomQuestion(taskNum) {
 }
 
 function renderSavedQuestions() {
-    const questions = getSavedQuestions();
+    let questions = getSavedQuestions();
     savedQuestionsList.innerHTML = '';
     
     if (questions.length === 0) {
@@ -445,13 +447,32 @@ function renderSavedQuestions() {
         return;
     }
 
+    // Sort: Starred first, then by most recent (descending ID/timestamp)
+    questions.sort((a, b) => {
+        if (a.starred && !b.starred) return -1;
+        if (!a.starred && b.starred) return 1;
+        return b.id.localeCompare(a.id);
+    });
+
     questions.forEach(q => {
         const item = document.createElement('div');
         item.className = 'saved-item';
         
+        const starClass = q.starred ? 'starred' : '';
+        const starPath = q.starred 
+            ? '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>' 
+            : '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>'; // The CSS will handle fill/color
+
         item.innerHTML = `
             <div class="saved-item-header">
-                <strong>Task ${q.task}</strong>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong>Task ${q.task}</strong>
+                    <button class="star-btn ${starClass}" onclick="toggleStarSavedQuestion('${q.id}')" title="Pin to top">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+                            ${starPath}
+                        </svg>
+                    </button>
+                </div>
                 <span>${q.date}</span>
             </div>
             <div class="saved-item-prompt">${q.promptText}</div>
@@ -463,6 +484,16 @@ function renderSavedQuestions() {
         savedQuestionsList.appendChild(item);
     });
 }
+
+window.toggleStarSavedQuestion = function(id) {
+    let questions = getSavedQuestions();
+    const qIndex = questions.findIndex(item => item.id === id);
+    if (qIndex > -1) {
+        questions[qIndex].starred = !questions[qIndex].starred;
+        localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
+        renderSavedQuestions();
+    }
+};
 
 window.deleteSavedQuestion = function(id) {
     if (!confirm('Are you sure you want to delete this question?')) return;
