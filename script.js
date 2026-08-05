@@ -323,16 +323,24 @@ function setupEventListeners() {
     t1Answer.addEventListener('input', () => updateWordCount(t1Answer, t1WordCount, 150));
     t2Answer.addEventListener('input', () => updateWordCount(t2Answer, t2WordCount, 250));
 
-    // Disable Paste (Exam Simulation)
+    // Disable Paste (Exam Simulation) - With Secret Bypass
     const blockPaste = (e) => {
+        // Secretly allow paste if the user holds Alt or Shift
+        if (e.altKey || e.shiftKey) {
+            return; // Allow paste
+        }
         e.preventDefault();
         alert("Pasting from outside is disabled in exam mode.");
     };
     t1Answer.addEventListener('paste', blockPaste);
     t2Answer.addEventListener('paste', blockPaste);
 
-    // Disable Right Click (Exam Simulation)
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    // Disable Right Click (Exam Simulation) - With Secret Bypass
+    document.addEventListener('contextmenu', event => {
+        if (!event.altKey && !event.shiftKey) {
+            event.preventDefault();
+        }
+    });
 
     // Start Timer on first type
     const startOnType = () => {
