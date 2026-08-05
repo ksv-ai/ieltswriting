@@ -645,19 +645,31 @@ async function evaluateEssay(taskNum) {
 
     const systemPrompt = `You are an expert, strict IELTS examiner. Evaluate the user's IELTS Academic Writing Task ${taskNum} essay.
 
-You MUST grade based strictly on the official public IELTS band descriptors:
-- Task Achievement (for Task 1) / Task Response (for Task 2)
-- Coherence and Cohesion
-- Lexical Resource
-- Grammatical Range and Accuracy
+You MUST grade based strictly on the official public IELTS band descriptors.
 
-Provide:
-1. **Estimated Overall Band Score** (e.g., 7.0)
-2. **Detailed Breakdown**: A score and specific rationale for each of the four criteria.
-3. **Key Strengths**: 2-3 bullet points of what they did well.
-4. **Areas for Improvement**: 2-3 highly specific actionable tips with examples of how they could rewrite a flawed sentence from their essay.
+Respond ONLY with a valid JSON object matching this exact structure, with no markdown code blocks outside of the JSON:
+{
+  "overallScore": "6.0",
+  "vocabularyComplexity": "C1 - Intricate",
+  "vocabularyComplexityTip": "Strive to incorporate even richer and more precise language.",
+  "grammarMistakesCount": 12,
+  "wordCount": 254,
+  "vocabularyRepetition": [
+    {"word": "obtained", "count": 4}
+  ],
+  "vocabularyRepetitionTip": "Try using synonyms for the above words.",
+  "taskResponseScore": "7.0",
+  "taskResponseText": "Detailed feedback paragraph about task response...",
+  "coherenceCohesionScore": "6.0",
+  "coherenceCohesionText": "Detailed feedback paragraph about coherence...",
+  "lexicalResourceScore": "5.0",
+  "lexicalResourceText": "Detailed feedback paragraph about vocabulary...",
+  "grammaticalRangeScore": "5.0",
+  "grammaticalRangeText": "Detailed feedback paragraph about grammar...",
+  "polishedWriting": "A fully rewritten Band 9 version of their essay. Do NOT use markdown bold/italics here, just plain text with paragraphs."
+}
 
-Format your response entirely in Markdown. Be brutally honest but constructive.`;
+Do not include any markdown formatting like \`\`\`json. Just return the raw JSON string.`;
 
     const payload = {
         contents: [
@@ -671,7 +683,8 @@ Format your response entirely in Markdown. Be brutally honest but constructive.`
             }
         ],
         generationConfig: {
-            temperature: 0.2
+            temperature: 0.2,
+            response_mime_type: "application/json"
         }
     };
 
@@ -688,10 +701,80 @@ Format your response entirely in Markdown. Be brutally honest but constructive.`
             throw new Error(data.error.message);
         }
 
-        const markdownText = data.candidates[0].content.parts[0].text;
+        const rawText = data.candidates[0].content.parts[0].text;
+        const result = JSON.parse(rawText);
         
-        // Use Marked.js to parse markdown safely
-        aiResultsContent.innerHTML = marked.parse(markdownText);
+        let vocabRepHtml = result.vocabularyRepetition.map(item => `<div style="margin-bottom: 10px;"><strong>${item.word}: ${item.count}</strong></div>`).join('');
+        
+        const htmlContent = `
+            <div class="ai-report-container">
+                <div class="score-header">
+                    <div style="text-align: right; color: #64748b; font-weight: 600; font-size: 0.95rem; margin-bottom: 20px;">
+                        <span>Word Count: ${result.wordCount}</span>
+                    </div>
+                    <h3>Overall Band Score</h3>
+                    <div class="huge-score">${result.overallScore}</div>
+                    <div class="score-subtext">(+/- 0.5)</div>
+                </div>
+
+                <div class="ai-card">
+                    <h4>Vocabulary Complexity:</h4>
+                    <div class="card-value">${result.vocabularyComplexity}</div>
+                    <div class="card-tip">${result.vocabularyComplexityTip}</div>
+                </div>
+
+                <div class="ai-card">
+                    <h4>Grammar Mistakes: ${result.grammarMistakesCount}</h4>
+                </div>
+
+                <div class="ai-card">
+                    <h4>Vocabulary Repetition:</h4>
+                    <div class="vocab-rep-list">${vocabRepHtml}</div>
+                    <div class="card-tip">${result.vocabularyRepetitionTip}</div>
+                </div>
+
+                <hr class="ai-divider">
+
+                <div class="criteria-section">
+                    <h3>Task ${taskNum === 1 ? 'Achievement' : 'Response'}</h3>
+                    <div class="criteria-score">${result.taskResponseScore}</div>
+                    <p>${result.taskResponseText}</p>
+                </div>
+
+                <hr class="ai-divider">
+
+                <div class="criteria-section">
+                    <h3>Coherence & Cohesion</h3>
+                    <div class="criteria-score">${result.coherenceCohesionScore}</div>
+                    <p>${result.coherenceCohesionText}</p>
+                </div>
+
+                <hr class="ai-divider">
+
+                <div class="criteria-section">
+                    <h3>Lexical Resource</h3>
+                    <div class="criteria-score">${result.lexicalResourceScore}</div>
+                    <p>${result.lexicalResourceText}</p>
+                </div>
+
+                <hr class="ai-divider">
+
+                <div class="criteria-section">
+                    <h3>Grammatical Range & Accuracy</h3>
+                    <div class="criteria-score">${result.grammaticalRangeScore}</div>
+                    <p>${result.grammaticalRangeText}</p>
+                </div>
+
+                <div class="polished-writing-section">
+                    <h3>Polished Writing (Band 9)</h3>
+                    <div class="polished-box">
+                        ${result.polishedWriting.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        aiResultsContent.innerHTML = htmlContent;
         
         aiLoadingIndicator.style.display = 'none';
         aiResultsContent.style.display = 'block';

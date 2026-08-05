@@ -733,35 +733,138 @@ canvas {
 #ai-results-content {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: #334155;
+    background-color: #fafafa;
+    padding: 30px;
 }
 
-#ai-results-content h3 {
-    color: #0f172a;
-    font-size: 1.25rem;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 0.5rem;
+.ai-report-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-#ai-results-content p {
-    margin-bottom: 1rem;
-    line-height: 1.7;
+.score-header {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-#ai-results-content ul {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
+.score-header h3 {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin-bottom: 5px;
 }
 
-#ai-results-content li {
-    margin-bottom: 0.5rem;
-    line-height: 1.6;
+.huge-score {
+    font-size: 6rem;
+    font-weight: 800;
+    color: #f97316; /* Orange score */
+    line-height: 1;
+    margin: 10px 0;
 }
 
-#ai-results-content strong {
-    color: #0f172a;
+.score-subtext {
+    font-size: 1rem;
+    color: #64748b;
     font-weight: 600;
+}
+
+.ai-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    background: #f8fafc;
+}
+
+.ai-card h4 {
+    font-size: 1.1rem;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.card-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.card-tip {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.vocab-rep-list {
+    font-size: 1.1rem;
+    margin: 15px 0;
+    color: #0f172a;
+}
+
+.ai-divider {
+    border: 0;
+    border-top: 2px dashed #cbd5e1;
+    margin: 30px 0;
+}
+
+.criteria-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.criteria-section h3 {
+    font-size: 1.4rem;
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+
+.criteria-score {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #f97316; /* Change to blue in JS if needed, but PDF uses orange/blue interchangeably */
+    margin-bottom: 15px;
+}
+
+/* Make Lexical Resource and Grammar blue like the PDF */
+.criteria-section:nth-of-type(3) .criteria-score, 
+.criteria-section:nth-of-type(4) .criteria-score {
+    color: #2563eb; 
+}
+
+.criteria-section p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #334155;
+    text-align: justify;
+}
+
+.polished-writing-section {
+    margin-top: 40px;
+}
+
+.polished-writing-section h3 {
+    font-size: 1.4rem;
+    color: #1e293b;
+    margin-bottom: 15px;
+}
+
+.polished-box {
+    background: #f0fdf4; /* Light green tint */
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 25px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #166534;
+}
+
+.polished-box p {
+    margin-bottom: 15px;
 }
 
 /* Scrollbar for AI Results */
