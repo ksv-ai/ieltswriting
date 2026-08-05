@@ -42,6 +42,11 @@
             <button class="modern-icon-btn" id="font-increase" title="Increase font size">
                 <span>A+</span>
             </button>
+            <button class="modern-icon-btn" id="saved-questions-btn" title="Saved Questions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </button>
             <button class="modern-icon-btn" id="help-btn" title="Help">
                 <span>?</span>
             </button>
@@ -92,6 +97,9 @@
                                     <img id="t1-custom-preview" class="hidden custom-preview" />
                                 </div>
                                 <textarea id="t1-custom-model" class="custom-input" style="margin-top: 15px;" placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <button id="t1-save-custom-btn" class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Save Question</button>
+                                </div>
                             </div>
                         </div>
                         
@@ -168,6 +176,9 @@
                             <div id="t2-custom-mode" class="hidden">
                                 <textarea id="t2-custom-prompt" class="custom-input task2-custom" placeholder="Type or paste your Task 2 prompt here..."></textarea>
                                 <textarea id="t2-custom-model" class="custom-input task2-custom" style="margin-top: 15px;" placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <button id="t2-save-custom-btn" class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Save Question</button>
+                                </div>
                             </div>
                         </div>
                         
@@ -244,6 +255,25 @@
             </div>
             <div class="modal-actions" style="margin-top: 25px;">
                 <button id="close-help-btn" class="btn primary">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Saved Questions Modal -->
+    <div id="saved-questions-modal" class="modal hidden">
+        <div class="modal-overlay" id="saved-questions-overlay"></div>
+        <div class="modal-content" style="max-width: 600px; text-align: left; overflow-y: auto; max-height: 85vh; padding: 0;">
+            <div style="background: var(--exam-blue); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    My Library
+                </h2>
+                <button id="close-saved-btn" style="background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0;">&times;</button>
+            </div>
+            <div id="saved-questions-list" style="padding: 20px;">
+                <p style="color: #666; text-align: center;">No saved questions yet.</p>
             </div>
         </div>
     </div>

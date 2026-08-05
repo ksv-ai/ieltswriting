@@ -608,3 +608,92 @@ canvas {
     justify-content: center;
     gap: 15px;
 }
+
+/* Saved Questions Styling */
+.saved-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.saved-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    border-color: #cbd5e1;
+}
+
+.saved-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #64748b;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
+}
+
+.saved-item-header strong {
+    color: var(--exam-blue);
+    background: #eff6ff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.saved-item-prompt {
+    font-size: 0.95rem;
+    color: var(--exam-text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.saved-item-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.btn-delete {
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover {
+    background: #fef2f2;
+    border-color: #ef4444;
+}
+
+.btn-load {
+    background: var(--exam-blue);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-load:hover {
+    background: #1d4ed8;
+}

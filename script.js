@@ -17,6 +17,7 @@ const fontIncreaseBtn = document.getElementById('font-increase');
 const fontDecreaseBtn = document.getElementById('font-decrease');
 const helpBtn = document.getElementById('help-btn');
 const settingsBtn = document.getElementById('settings-btn');
+const savedQuestionsBtn = document.getElementById('saved-questions-btn');
 
 // Sections
 const task1Section = document.getElementById('task1-section');
@@ -92,6 +93,8 @@ const t1CustomUpload = document.getElementById('t1-custom-upload');
 const t1CustomPreview = document.getElementById('t1-custom-preview');
 const t1CustomModel = document.getElementById('t1-custom-model');
 const t2CustomModel = document.getElementById('t2-custom-model');
+const t1SaveCustomBtn = document.getElementById('t1-save-custom-btn');
+const t2SaveCustomBtn = document.getElementById('t2-save-custom-btn');
 let isCustomMode = false;
 
 // Modal
@@ -105,6 +108,11 @@ const modalTitle = document.getElementById('modal-title');
 const helpModal = document.getElementById('help-modal');
 const closeHelpBtn = document.getElementById('close-help-btn');
 const helpOverlay = document.getElementById('help-overlay');
+
+const savedQuestionsModal = document.getElementById('saved-questions-modal');
+const closeSavedBtn = document.getElementById('close-saved-btn');
+const savedQuestionsOverlay = document.getElementById('saved-questions-overlay');
+const savedQuestionsList = document.getElementById('saved-questions-list');
 
 
 
@@ -228,6 +236,25 @@ function setupEventListeners() {
         helpModal.classList.add('hidden');
     });
 
+    // Saved Questions Modal
+    savedQuestionsBtn.addEventListener('click', () => {
+        renderSavedQuestions();
+        savedQuestionsModal.classList.remove('hidden');
+        savedQuestionsOverlay.classList.remove('hidden');
+    });
+    closeSavedBtn.addEventListener('click', () => {
+        savedQuestionsModal.classList.add('hidden');
+        savedQuestionsOverlay.classList.add('hidden');
+    });
+    savedQuestionsOverlay.addEventListener('click', () => {
+        savedQuestionsModal.classList.add('hidden');
+        savedQuestionsOverlay.classList.add('hidden');
+    });
+    
+    // Save Custom Questions
+    t1SaveCustomBtn.addEventListener('click', () => saveCustomQuestion(1));
+    t2SaveCustomBtn.addEventListener('click', () => saveCustomQuestion(2));
+
     // Custom Model Inputs
     t1CustomModel.addEventListener('input', () => {
         if (isCustomMode) updateCustomModels();
@@ -346,6 +373,144 @@ function setupEventListeners() {
 }
 
 // --- Navigation ---
+function resizeLayout() {
+    // Basic responsive handling if needed
+    if (window.innerWidth < 768) {
+        // Force splitters to adjust if necessary
+    }
+}
+
+// --- Local Storage: Saved Custom Questions ---
+
+function getSavedQuestions() {
+    const saved = localStorage.getItem('ielts_saved_questions');
+    return saved ? JSON.parse(saved) : [];
+}
+
+function saveCustomQuestion(taskNum) {
+    const questions = getSavedQuestions();
+    
+    if (taskNum === 1) {
+        const promptText = document.getElementById('t1-custom-prompt').value.trim();
+        const modelAnswer = t1CustomModel.value.trim();
+        const imageSrc = t1CustomPreview.src;
+        
+        if (!promptText) {
+            alert('Please enter a prompt to save.');
+            return;
+        }
+
+        const newQ = {
+            id: Date.now().toString(),
+            task: 1,
+            promptText: promptText,
+            imageSrc: imageSrc && !imageSrc.endsWith(window.location.host + '/') ? imageSrc : null,
+            modelAnswer: modelAnswer,
+            date: new Date().toLocaleDateString()
+        };
+        
+        questions.push(newQ);
+        localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
+        alert('Task 1 Custom Question Saved!');
+        
+    } else if (taskNum === 2) {
+        const promptText = document.getElementById('t2-custom-prompt').value.trim();
+        const modelAnswer = t2CustomModel.value.trim();
+        
+        if (!promptText) {
+            alert('Please enter a prompt to save.');
+            return;
+        }
+
+        const newQ = {
+            id: Date.now().toString(),
+            task: 2,
+            promptText: promptText,
+            modelAnswer: modelAnswer,
+            date: new Date().toLocaleDateString()
+        };
+        
+        questions.push(newQ);
+        localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
+        alert('Task 2 Custom Question Saved!');
+    }
+}
+
+function renderSavedQuestions() {
+    const questions = getSavedQuestions();
+    savedQuestionsList.innerHTML = '';
+    
+    if (questions.length === 0) {
+        savedQuestionsList.innerHTML = '<p style="color: #666; text-align: center;">No saved questions yet.</p>';
+        return;
+    }
+
+    questions.forEach(q => {
+        const item = document.createElement('div');
+        item.className = 'saved-item';
+        
+        item.innerHTML = `
+            <div class="saved-item-header">
+                <strong>Task ${q.task}</strong>
+                <span>${q.date}</span>
+            </div>
+            <div class="saved-item-prompt">${q.promptText}</div>
+            <div class="saved-item-actions">
+                <button class="btn-delete" onclick="deleteSavedQuestion('${q.id}')">Delete</button>
+                <button class="btn-load" onclick="loadSavedQuestion('${q.id}')">Load</button>
+            </div>
+        `;
+        savedQuestionsList.appendChild(item);
+    });
+}
+
+window.deleteSavedQuestion = function(id) {
+    if (!confirm('Are you sure you want to delete this question?')) return;
+    let questions = getSavedQuestions();
+    questions = questions.filter(q => q.id !== id);
+    localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
+    renderSavedQuestions();
+};
+
+window.loadSavedQuestion = function(id) {
+    const questions = getSavedQuestions();
+    const q = questions.find(item => item.id === id);
+    if (!q) return;
+
+    // Switch to Custom Mode if not already
+    isCustomMode = true;
+    updateCustomModels();
+    settingsBtn.style.color = 'var(--exam-blue)';
+    document.querySelectorAll('.custom-input').forEach(el => el.classList.remove('readonly-bg'));
+    t1RandomMode.classList.add('hidden');
+    t1CustomMode.classList.remove('hidden');
+    t2RandomMode.classList.add('hidden');
+    t2CustomMode.classList.remove('hidden');
+
+    if (q.task === 1) {
+        document.getElementById('t1-custom-prompt').value = q.promptText || '';
+        t1CustomModel.value = q.modelAnswer || '';
+        if (q.imageSrc) {
+            t1CustomPreview.src = q.imageSrc;
+            t1CustomPreview.classList.remove('hidden');
+        } else {
+            t1CustomPreview.src = '';
+            t1CustomPreview.classList.add('hidden');
+        }
+        switchPart(1);
+    } else if (q.task === 2) {
+        document.getElementById('t2-custom-prompt').value = q.promptText || '';
+        t2CustomModel.value = q.modelAnswer || '';
+        switchPart(2);
+    }
+
+    updateCustomModels();
+    
+    // Close modal
+    savedQuestionsModal.classList.add('hidden');
+    savedQuestionsOverlay.classList.add('hidden');
+};
+
 function switchPart(part) {
     currentPart = part;
     if (part === 1) {
