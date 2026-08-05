@@ -323,10 +323,19 @@ function setupEventListeners() {
     t1Answer.addEventListener('input', () => updateWordCount(t1Answer, t1WordCount, 150));
     t2Answer.addEventListener('input', () => updateWordCount(t2Answer, t2WordCount, 250));
 
+    // Global modifier tracking for Paste Bypass (ClipboardEvent lacks modifier keys)
+    let isSecretModifierDown = false;
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Alt' || e.key === 'Shift') isSecretModifierDown = true;
+    });
+    document.addEventListener('keyup', (e) => {
+        if (e.key === 'Alt' || e.key === 'Shift') isSecretModifierDown = false;
+    });
+
     // Disable Paste (Exam Simulation) - With Secret Bypass
     const blockPaste = (e) => {
         // Secretly allow paste if the user holds Alt or Shift
-        if (e.altKey || e.shiftKey) {
+        if (isSecretModifierDown) {
             return; // Allow paste
         }
         e.preventDefault();
