@@ -723,3 +723,62 @@ canvas {
 .btn-load:hover {
     background: #1d4ed8;
 }
+
+/* AI Evaluation Styles */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+#ai-results-content {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #334155;
+}
+
+#ai-results-content h3 {
+    color: #0f172a;
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+}
+
+#ai-results-content p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+#ai-results-content ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+#ai-results-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+#ai-results-content strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+/* Scrollbar for AI Results */
+#ai-results-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#ai-results-content::-webkit-scrollbar-track {
+    background: #f1f5f9; 
+    border-radius: 4px;
+}
+ 
+#ai-results-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1; 
+    border-radius: 4px;
+}
+
+#ai-results-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; 
+}

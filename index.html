@@ -54,6 +54,10 @@
                 <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 Custom Mode
             </button>
+            <button class="modern-btn" id="ai-settings-btn" style="background: #10b981; border-color: #059669; margin-left: 5px;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                AI Evaluator
+            </button>
         </div>
     </header>
 
@@ -140,8 +144,9 @@
                     <div class="answer-wrapper">
                         <textarea id="t1-answer" class="exam-textarea" placeholder="Write your answer here..."></textarea>
                     </div>
-                    <div class="word-count-bar">
+                    <div class="word-count-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="word-count" id="t1-word-count">Word count: 0</span>
+                        <button id="t1-ai-evaluate-btn" class="modern-btn" style="background: #10b981; border-color: #059669; padding: 6px 12px; font-size: 0.9rem;">✨ AI Grade</button>
                     </div>
                 </div>
             </div>
@@ -219,8 +224,9 @@
                     <div class="answer-wrapper">
                         <textarea id="t2-answer" class="exam-textarea" placeholder="Write your answer here..."></textarea>
                     </div>
-                    <div class="word-count-bar">
+                    <div class="word-count-bar" style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="word-count" id="t2-word-count">Word count: 0</span>
+                        <button id="t2-ai-evaluate-btn" class="modern-btn" style="background: #10b981; border-color: #059669; padding: 6px 12px; font-size: 0.9rem;">✨ AI Grade</button>
                     </div>
                 </div>
             </div>
@@ -282,19 +288,62 @@
     <div id="submit-modal" class="modal hidden">
         <div class="modal-overlay"></div>
         <div class="modal-content">
-            <h2 id="modal-title">End of Test</h2>
-            <p id="summary-text"></p>
-            <div class="modal-actions" style="margin-top: 25px; gap: 10px;">
-                <button id="download-btn" class="btn primary">Download (.txt)</button>
-                <button id="download-doc-btn" class="btn primary">Download (.doc)</button>
+            <h2 id="modal-title">Time's Up!</h2>
+            <div id="summary-text" style="text-align: left; margin: 20px 0;"></div>
+            <div class="modal-actions">
+                <button id="download-btn" class="btn primary">Download as Text</button>
+                <button id="download-doc-btn" class="btn primary">Download as Word</button>
                 <button id="close-modal-btn" class="btn">Close</button>
             </div>
         </div>
     </div>
 
+    <!-- AI Settings Modal -->
+    <div id="ai-settings-modal" class="modal hidden">
+        <div class="modal-overlay" id="ai-settings-overlay"></div>
+        <div class="modal-content" style="max-width: 500px; text-align: left;">
+            <h2 style="color: #10b981; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                AI Evaluator Settings
+            </h2>
+            <div style="line-height: 1.6; color: #444; margin-bottom: 20px;">
+                <p>Enter a free Google Gemini API Key to unlock instant, detailed AI feedback on your essays.</p>
+                <p style="font-size: 0.9rem; margin-top: 10px;">
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--exam-blue); text-decoration: underline;">Get a free Gemini API key here</a>. Your key is stored securely in your browser and never shared.
+                </p>
+                <input type="password" id="ai-api-key-input" class="custom-input" placeholder="Paste your API key (AIzaSy...)" style="margin-top: 15px;">
+            </div>
+            <div class="modal-actions" style="margin-top: 25px;">
+                <button id="save-ai-key-btn" class="btn primary" style="background: #10b981; border-color: #059669;">Save Key</button>
+                <button id="close-ai-settings-btn" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- AI Evaluation Results Modal -->
+    <div id="ai-results-modal" class="modal hidden">
+        <div class="modal-overlay" id="ai-results-overlay"></div>
+        <div class="modal-content" style="max-width: 800px; width: 90%; text-align: left; overflow-y: auto; max-height: 90vh; padding: 0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="background: #10b981; color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+                <h2 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                    ✨ Evaluation Results
+                </h2>
+                <button id="close-ai-results-btn" style="background: transparent; border: none; color: white; font-size: 2rem; line-height: 1; cursor: pointer; padding: 0;">&times;</button>
+            </div>
+            
+            <div id="ai-loading-indicator" style="padding: 50px; text-align: center; color: #64748b;">
+                <svg style="animation: spin 1s linear infinite; margin-bottom: 15px;" viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                <p style="font-size: 1.1rem;">The Examiner is reading your essay...</p>
+            </div>
 
-    <!-- Data & Logic -->
+            <div id="ai-results-content" style="padding: 25px; background: #fff; flex: 1; overflow-y: auto; line-height: 1.6; display: none;">
+                <!-- AI Content Injected Here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="questions.js"></script>
     <script src="questions2.js"></script>
     <script src="script.js"></script>

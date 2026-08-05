@@ -114,7 +114,22 @@ const closeSavedBtn = document.getElementById('close-saved-btn');
 const savedQuestionsOverlay = document.getElementById('saved-questions-overlay');
 const savedQuestionsList = document.getElementById('saved-questions-list');
 
+// AI Elements
+const aiSettingsBtn = document.getElementById('ai-settings-btn');
+const aiSettingsModal = document.getElementById('ai-settings-modal');
+const closeAiSettingsBtn = document.getElementById('close-ai-settings-btn');
+const aiSettingsOverlay = document.getElementById('ai-settings-overlay');
+const saveAiKeyBtn = document.getElementById('save-ai-key-btn');
+const aiApiKeyInput = document.getElementById('ai-api-key-input');
 
+const aiResultsModal = document.getElementById('ai-results-modal');
+const closeAiResultsBtn = document.getElementById('close-ai-results-btn');
+const aiResultsOverlay = document.getElementById('ai-results-overlay');
+const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
+const aiResultsContent = document.getElementById('ai-results-content');
+
+const t1AiEvaluateBtn = document.getElementById('t1-ai-evaluate-btn');
+const t2AiEvaluateBtn = document.getElementById('t2-ai-evaluate-btn');
 
 let currentT1Model = null;
 let currentT2Model = null;
@@ -250,6 +265,43 @@ function setupEventListeners() {
         savedQuestionsModal.classList.add('hidden');
         savedQuestionsOverlay.classList.add('hidden');
     });
+
+    // AI Settings Modal
+    aiSettingsBtn.addEventListener('click', () => {
+        aiApiKeyInput.value = localStorage.getItem('ielts_ai_key') || '';
+        aiSettingsModal.classList.remove('hidden');
+    });
+    
+    closeAiSettingsBtn.addEventListener('click', () => {
+        aiSettingsModal.classList.add('hidden');
+    });
+    
+    aiSettingsOverlay.addEventListener('click', () => {
+        aiSettingsModal.classList.add('hidden');
+    });
+    
+    saveAiKeyBtn.addEventListener('click', () => {
+        const key = aiApiKeyInput.value.trim();
+        if (key) {
+            localStorage.setItem('ielts_ai_key', key);
+            aiSettingsModal.classList.add('hidden');
+            alert('API Key saved successfully!');
+        } else {
+            alert('Please enter a valid key or cancel.');
+        }
+    });
+
+    // Close AI Results Modal
+    closeAiResultsBtn.addEventListener('click', () => {
+        aiResultsModal.classList.add('hidden');
+    });
+    aiResultsOverlay.addEventListener('click', () => {
+        aiResultsModal.classList.add('hidden');
+    });
+    
+    // Evaluate Buttons
+    t1AiEvaluateBtn.addEventListener('click', () => evaluateEssay(1));
+    t2AiEvaluateBtn.addEventListener('click', () => evaluateEssay(2));
     
     // Save Custom Questions
     t1SaveCustomBtn.addEventListener('click', () => saveCustomQuestion(1));
@@ -541,6 +593,102 @@ window.loadSavedQuestion = function(id) {
     savedQuestionsModal.classList.add('hidden');
     savedQuestionsOverlay.classList.add('hidden');
 };
+
+// --- AI Evaluation ---
+
+async function evaluateEssay(taskNum) {
+    const apiKey = localStorage.getItem('ielts_ai_key');
+    if (!apiKey) {
+        alert("Please set your Gemini API Key in the AI Settings first.");
+        aiSettingsBtn.click();
+        return;
+    }
+
+    let promptText = "";
+    let answerText = "";
+
+    if (taskNum === 1) {
+        promptText = isCustomMode ? document.getElementById('t1-custom-prompt').value : document.getElementById('t1-specific-prompt').innerText;
+        answerText = document.getElementById('t1-answer').value.trim();
+    } else {
+        promptText = isCustomMode ? document.getElementById('t2-custom-prompt').value : document.getElementById('t2-specific-prompt').innerText;
+        answerText = document.getElementById('t2-answer').value.trim();
+    }
+
+    if (!answerText) {
+        alert("Please write an answer before evaluating.");
+        return;
+    }
+
+    // Open Modal & Show Loading
+    aiResultsModal.classList.remove('hidden');
+    aiLoadingIndicator.style.display = 'block';
+    aiResultsContent.style.display = 'none';
+    aiResultsContent.innerHTML = '';
+
+    const systemPrompt = `You are an expert, strict IELTS examiner. Evaluate the user's IELTS Academic Writing Task ${taskNum} essay.
+
+You MUST grade based strictly on the official public IELTS band descriptors:
+- Task Achievement (for Task 1) / Task Response (for Task 2)
+- Coherence and Cohesion
+- Lexical Resource
+- Grammatical Range and Accuracy
+
+Provide:
+1. **Estimated Overall Band Score** (e.g., 7.0)
+2. **Detailed Breakdown**: A score and specific rationale for each of the four criteria.
+3. **Key Strengths**: 2-3 bullet points of what they did well.
+4. **Areas for Improvement**: 2-3 highly specific actionable tips with examples of how they could rewrite a flawed sentence from their essay.
+
+Format your response entirely in Markdown. Be brutally honest but constructive.`;
+
+    const payload = {
+        contents: [
+            {
+                role: "user",
+                parts: [
+                    { text: systemPrompt },
+                    { text: "\n\n--- QUESTION PROMPT ---\n" + promptText },
+                    { text: "\n\n--- USER ESSAY ---\n" + answerText }
+                ]
+            }
+        ],
+        generationConfig: {
+            temperature: 0.2
+        }
+    };
+
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error.message);
+        }
+
+        const markdownText = data.candidates[0].content.parts[0].text;
+        
+        // Use Marked.js to parse markdown safely
+        aiResultsContent.innerHTML = marked.parse(markdownText);
+        
+        aiLoadingIndicator.style.display = 'none';
+        aiResultsContent.style.display = 'block';
+        
+    } catch (error) {
+        aiLoadingIndicator.style.display = 'none';
+        aiResultsContent.style.display = 'block';
+        aiResultsContent.innerHTML = `<div style="color: #ef4444; padding: 20px; background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca;">
+            <strong>Evaluation Failed</strong><br><br>
+            ${error.message || 'An error occurred while contacting the AI.'}<br><br>
+            Please check your API key and internet connection.
+        </div>`;
+    }
+}
 
 function switchPart(part) {
     currentPart = part;
