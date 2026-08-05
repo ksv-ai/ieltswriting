@@ -796,6 +796,13 @@ Do not include any markdown formatting like \`\`\`json. Just return the raw JSON
                     <p>${result.grammaticalRangeText}</p>
                 </div>
 
+                <div class="original-writing-section" style="margin-top: 40px;">
+                    <h3>Your Original Essay</h3>
+                    <div class="original-box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 25px; font-size: 1.1rem; line-height: 1.8; color: #334155; white-space: pre-wrap;">
+                        ${answerText}
+                    </div>
+                </div>
+
                 <div class="polished-writing-section">
                     <h3>Polished Writing (Band 9)</h3>
                     <div class="polished-box">
