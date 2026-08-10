@@ -613,11 +613,11 @@ canvas {
 .saved-item {
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
     background: white;
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     transition: transform 0.2s, box-shadow 0.2s;
@@ -636,7 +636,7 @@ canvas {
     font-size: 0.85rem;
     color: #64748b;
     border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
 }
 
 .saved-item-header strong {
@@ -648,7 +648,7 @@ canvas {
 }
 
 .saved-item-prompt {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--exam-text);
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -688,7 +688,7 @@ canvas {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 0;
+    margin-top: 2px;
 }
 
 .btn-delete {
