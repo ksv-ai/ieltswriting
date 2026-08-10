@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cambridge IELTS Writing Test Simulator</title>
+    <title>IELTS Writing Simulator</title>
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="stylesheet" href="styles.css">
     <!-- Chart.js for rendering graphs in Task 1 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <!-- Real IELTS Exam Top Bar -->
     <header class="exam-top-bar">
         <div class="top-bar-left">
-            <div style="font-size: 1.4rem; font-weight: bold; color: var(--exam-text); letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px;">
-                <span style="background: var(--exam-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 1rem;">IELTS</span>
+            <div
+                style="font-size: 1.4rem; font-weight: bold; color: var(--exam-text); letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px;">
+                <span
+                    style="background: var(--exam-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 1rem;">IELTS</span>
                 Writing Simulator
             </div>
             <div style="font-size: 0.85rem; color: #666; margin-top: 2px;">Academic Training Mode</div>
         </div>
         <div class="top-bar-center">
             <div class="timer-wrapper">
-                <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
@@ -52,11 +57,21 @@
                 <span>?</span>
             </button>
             <button class="modern-btn" id="settings-btn">
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                </svg>
                 Custom Mode
             </button>
-            <button class="modern-btn" id="ai-settings-btn" style="background: #10b981; border-color: #059669; margin-left: 5px;">
-                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <button class="modern-btn" id="ai-settings-btn"
+                style="background: #10b981; border-color: #059669; margin-left: 5px;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
                 AI Evaluator
             </button>
         </div>
@@ -64,7 +79,7 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-        
+
         <!-- TASK 1 SECTION -->
         <div id="task1-section" class="task-section active">
             <div class="split-container">
@@ -73,9 +88,12 @@
                     <div class="panel-header exam-panel-header">
                         <h2>Writing Task 1</h2>
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <span id="t1-model-label" class="hidden" style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
-                            <button id="t1-model-inline-btn" class="text-btn primary-text hidden" style="color: #10b981;">Below</button>
-                            <button id="t1-model-side-btn" class="text-btn primary-text hidden" style="color: #10b981;">Side</button>
+                            <span id="t1-model-label" class="hidden"
+                                style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
+                            <button id="t1-model-inline-btn" class="text-btn primary-text hidden"
+                                style="color: #10b981;">Below</button>
+                            <button id="t1-model-side-btn" class="text-btn primary-text hidden"
+                                style="color: #10b981;">Side</button>
                             <span style="color: #ccc; margin: 0 5px;">|</span>
                             <button id="new-t1-btn" class="text-btn primary-text">Load New Prompt</button>
                         </div>
@@ -84,7 +102,8 @@
                         <div class="panel-content" id="t1-top-area" style="flex: 1; overflow-y: auto;">
                             <!-- Random Mode -->
                             <div id="t1-random-mode">
-                                <p id="t1-prompt-text" class="prompt-text">You should spend about 20 minutes on this task.</p>
+                                <p id="t1-prompt-text" class="prompt-text">You should spend about 20 minutes on this
+                                    task.</p>
                                 <p id="t1-specific-prompt" class="prompt-text bold"></p>
                                 <div class="chart-container">
                                     <canvas id="t1-chart"></canvas>
@@ -93,7 +112,8 @@
                             </div>
                             <!-- Custom Mode -->
                             <div id="t1-custom-mode" class="hidden">
-                                <textarea id="t1-custom-prompt" class="custom-input" placeholder="Type or paste your Task 1 prompt here..."></textarea>
+                                <textarea id="t1-custom-prompt" class="custom-input"
+                                    placeholder="Type or paste your Task 1 prompt here..."></textarea>
                                 <div class="custom-upload-area">
                                     <label for="t1-custom-upload" class="upload-label">Upload Chart/Image</label>
                                     <input type="file" id="t1-custom-upload" accept="image/*" class="hidden" />
@@ -101,23 +121,30 @@
                                 <div class="custom-preview-container">
                                     <img id="t1-custom-preview" class="hidden custom-preview" />
                                 </div>
-                                <textarea id="t1-custom-model" class="custom-input" style="margin-top: 15px;" placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
+                                <textarea id="t1-custom-model" class="custom-input" style="margin-top: 15px;"
+                                    placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
                                 <div style="margin-top: 15px; text-align: right;">
-                                    <button id="t1-save-custom-btn" class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Save Question</button>
+                                    <button id="t1-save-custom-btn" class="btn-primary"
+                                        style="padding: 8px 16px; font-size: 0.9rem;">Save Question</button>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Horizontal Splitter for Inline Model -->
                         <div class="h-splitter hidden" id="t1-h-splitter"></div>
-                        
+
                         <!-- Inline Model Content -->
-                        <div id="t1-inline-model-area" class="hidden" style="height: 40%; overflow-y: auto; background-color: #fafafa; padding: 25px; border-top: 1px solid #ddd;">
-                            <h3 style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div id="t1-inline-model-area" class="hidden"
+                            style="height: 40%; overflow-y: auto; background-color: #fafafa; padding: 25px; border-top: 1px solid #ddd;">
+                            <h3
+                                style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
                                 <span>Band 9 Model Answer</span>
-                                <span id="t1-inline-model-wc" style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
+                                <span id="t1-inline-model-wc"
+                                    style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
                             </h3>
-                            <div id="t1-inline-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                            <div id="t1-inline-model-text"
+                                style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,11 +156,15 @@
                 <!-- Middle Panel (Side View Model Answer) -->
                 <div class="panel middle-panel hidden" id="t1-middle-panel">
                     <div style="padding: 25px; height: 100%; overflow-y: auto;">
-                        <h3 style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <h3
+                            style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
                             <span>Band 9 Model Answer</span>
-                            <span id="t1-side-model-wc" style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
+                            <span id="t1-side-model-wc"
+                                style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
                         </h3>
-                        <div id="t1-side-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                        <div id="t1-side-model-text"
+                            style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;">
+                        </div>
                     </div>
                 </div>
 
@@ -143,11 +174,15 @@
                 <!-- Right Panel (Answer Area) -->
                 <div class="panel right-panel" id="t1-right-panel">
                     <div class="answer-wrapper">
-                        <textarea id="t1-answer" class="exam-textarea" placeholder="Write your answer here..."></textarea>
+                        <textarea id="t1-answer" class="exam-textarea"
+                            placeholder="Write your answer here..."></textarea>
                     </div>
-                    <div class="word-count-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="word-count-bar"
+                        style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="word-count" id="t1-word-count">Word count: 0</span>
-                        <button id="t1-ai-evaluate-btn" class="modern-btn" style="background: #10b981; border-color: #059669; padding: 6px 12px; font-size: 0.9rem;">✨ AI Grade</button>
+                        <button id="t1-ai-evaluate-btn" class="modern-btn"
+                            style="background: #10b981; border-color: #059669; padding: 6px 12px; font-size: 0.9rem;">✨
+                            AI Grade</button>
                     </div>
                 </div>
             </div>
@@ -161,9 +196,12 @@
                     <div class="panel-header exam-panel-header">
                         <h2>Writing Task 2</h2>
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <span id="t2-model-label" class="hidden" style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
-                            <button id="t2-model-inline-btn" class="text-btn primary-text hidden" style="color: #10b981;">Below</button>
-                            <button id="t2-model-side-btn" class="text-btn primary-text hidden" style="color: #10b981;">Side</button>
+                            <span id="t2-model-label" class="hidden"
+                                style="color: #10b981; font-weight: bold; font-size: 0.9rem;">★ Band 9:</span>
+                            <button id="t2-model-inline-btn" class="text-btn primary-text hidden"
+                                style="color: #10b981;">Below</button>
+                            <button id="t2-model-side-btn" class="text-btn primary-text hidden"
+                                style="color: #10b981;">Side</button>
                             <span style="color: #ccc; margin: 0 5px;">|</span>
                             <button id="new-t2-btn" class="text-btn primary-text">Load New Prompt</button>
                         </div>
@@ -172,32 +210,44 @@
                         <div class="panel-content" id="t2-top-area" style="flex: 1; overflow-y: auto;">
                             <!-- Random Mode -->
                             <div id="t2-random-mode">
-                                <p id="t2-prompt-text" class="prompt-text" style="margin-bottom: 25px;">You should spend about 40 minutes on this task.</p>
+                                <p id="t2-prompt-text" class="prompt-text" style="margin-bottom: 25px;">You should spend
+                                    about 40 minutes on this task.</p>
                                 <div class="task2-box" style="margin-bottom: 30px; padding: 25px;">
                                     <p id="t2-specific-prompt" class="prompt-text bold" style="margin-bottom: 0;"></p>
                                 </div>
-                                <p class="prompt-text instructions" style="margin-top: 20px;">Give reasons for your answer and include any relevant examples from your own knowledge or experience.<br><br>Write at least 250 words.</p>
+                                <p class="prompt-text instructions" style="margin-top: 20px;">Give reasons for your
+                                    answer and include any relevant examples from your own knowledge or
+                                    experience.<br><br>Write at least 250 words.</p>
                             </div>
                             <!-- Custom Mode -->
                             <div id="t2-custom-mode" class="hidden">
-                                <textarea id="t2-custom-prompt" class="custom-input task2-custom" placeholder="Type or paste your Task 2 prompt here..."></textarea>
-                                <textarea id="t2-custom-model" class="custom-input task2-custom" style="margin-top: 15px;" placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
+                                <textarea id="t2-custom-prompt" class="custom-input task2-custom"
+                                    placeholder="Type or paste your Task 2 prompt here..."></textarea>
+                                <textarea id="t2-custom-model" class="custom-input task2-custom"
+                                    style="margin-top: 15px;"
+                                    placeholder="Optional: Type or paste your own Band 9 model answer here to view it later..."></textarea>
                                 <div style="margin-top: 15px; text-align: right;">
-                                    <button id="t2-save-custom-btn" class="btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Save Question</button>
+                                    <button id="t2-save-custom-btn" class="btn-primary"
+                                        style="padding: 8px 16px; font-size: 0.9rem;">Save Question</button>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Horizontal Splitter for Inline Model -->
                         <div class="h-splitter hidden" id="t2-h-splitter"></div>
-                        
+
                         <!-- Inline Model Content -->
-                        <div id="t2-inline-model-area" class="hidden" style="height: 40%; overflow-y: auto; background-color: #fafafa; padding: 25px; border-top: 1px solid #ddd;">
-                            <h3 style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div id="t2-inline-model-area" class="hidden"
+                            style="height: 40%; overflow-y: auto; background-color: #fafafa; padding: 25px; border-top: 1px solid #ddd;">
+                            <h3
+                                style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
                                 <span>Band 9 Model Answer</span>
-                                <span id="t2-inline-model-wc" style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
+                                <span id="t2-inline-model-wc"
+                                    style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
                             </h3>
-                            <div id="t2-inline-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                            <div id="t2-inline-model-text"
+                                style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -209,11 +259,15 @@
                 <!-- Middle Panel (Side View Model Answer) -->
                 <div class="panel middle-panel hidden" id="t2-middle-panel">
                     <div style="padding: 25px; height: 100%; overflow-y: auto;">
-                        <h3 style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <h3
+                            style="color: #10b981; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
                             <span>Band 9 Model Answer</span>
-                            <span id="t2-side-model-wc" style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
+                            <span id="t2-side-model-wc"
+                                style="font-size: 0.9rem; color: #0284c7; font-weight: normal;"></span>
                         </h3>
-                        <div id="t2-side-model-text" style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;"></div>
+                        <div id="t2-side-model-text"
+                            style="white-space: pre-wrap; font-family: 'Times New Roman', Times, serif; font-size: 1.1rem; line-height: 1.8; color: #333;">
+                        </div>
                     </div>
                 </div>
 
@@ -223,11 +277,15 @@
                 <!-- Right Panel (Answer Area) -->
                 <div class="panel right-panel" id="t2-right-panel">
                     <div class="answer-wrapper">
-                        <textarea id="t2-answer" class="exam-textarea" placeholder="Write your answer here..."></textarea>
+                        <textarea id="t2-answer" class="exam-textarea"
+                            placeholder="Write your answer here..."></textarea>
                     </div>
-                    <div class="word-count-bar" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="word-count-bar"
+                        style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="word-count" id="t2-word-count">Word count: 0</span>
-                        <button id="t2-ai-evaluate-btn" class="modern-btn" style="background: #10b981; border-color: #059669; padding: 6px 12px; font-size: 0.9rem;">✨ AI Grade</button>
+                        <button id="t2-ai-evaluate-btn" class="modern-btn"
+                            style="background: #10b981; border-color: #059669; padding: 6px 12px; font-size: 0.9rem;">✨
+                            AI Grade</button>
                     </div>
                 </div>
             </div>
@@ -252,13 +310,20 @@
     <div id="help-modal" class="modal hidden">
         <div class="modal-overlay" id="help-overlay"></div>
         <div class="modal-content" style="max-width: 600px; text-align: left; overflow-y: auto; max-height: 85vh;">
-            <h2 style="color: var(--exam-blue); margin-bottom: 20px; border-bottom: 2px solid var(--exam-light-grey); padding-bottom: 10px;">How to Use the Simulator</h2>
+            <h2
+                style="color: var(--exam-blue); margin-bottom: 20px; border-bottom: 2px solid var(--exam-light-grey); padding-bottom: 10px;">
+                How to Use the Simulator</h2>
             <div style="line-height: 1.6; color: #444;">
-                <p><strong>1. Standard Practice:</strong> By default, you'll receive random prompts for Task 1 and Task 2. Type your essay in the right panel. The word counter updates live.</p>
-                <p><strong>2. Custom Mode:</strong> Click the "Custom Mode" button (top right) to paste your own prompts or even your own Band 9 model answers for practice.</p>
-                <p><strong>3. Band 9 Model Answers:</strong> If a Band 9 answer is available for the current prompt, use the "Below" or "Side" buttons to reveal it and study the structure.</p>
-                <p><strong>4. Timer:</strong> Click on the time (e.g., 60:00) to adjust the starting time. The timer turns red when less than 5 minutes remain.</p>
-                <p><strong>5. Font Size:</strong> Use the <strong>A-</strong> and <strong>A+</strong> buttons to resize the text to your preference.</p>
+                <p><strong>1. Standard Practice:</strong> By default, you'll receive random prompts for Task 1 and Task
+                    2. Type your essay in the right panel. The word counter updates live.</p>
+                <p><strong>2. Custom Mode:</strong> Click the "Custom Mode" button (top right) to paste your own prompts
+                    or even your own Band 9 model answers for practice.</p>
+                <p><strong>3. Band 9 Model Answers:</strong> If a Band 9 answer is available for the current prompt, use
+                    the "Below" or "Side" buttons to reveal it and study the structure.</p>
+                <p><strong>4. Timer:</strong> Click on the time (e.g., 60:00) to adjust the starting time. The timer
+                    turns red when less than 5 minutes remain.</p>
+                <p><strong>5. Font Size:</strong> Use the <strong>A-</strong> and <strong>A+</strong> buttons to resize
+                    the text to your preference.</p>
             </div>
             <div class="modal-actions" style="margin-top: 25px;">
                 <button id="close-help-btn" class="btn primary">Got it!</button>
@@ -269,15 +334,18 @@
     <!-- Saved Questions Modal -->
     <div id="saved-questions-modal" class="modal hidden">
         <div class="modal-overlay" id="saved-questions-overlay"></div>
-        <div class="modal-content" style="max-width: 600px; text-align: left; overflow-y: auto; max-height: 85vh; padding: 0; border-radius: 8px; overflow: hidden;">
-            <div style="background: var(--exam-blue); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="modal-content"
+            style="max-width: 600px; text-align: left; overflow-y: auto; max-height: 85vh; padding: 0; border-radius: 8px; overflow: hidden;">
+            <div
+                style="background: var(--exam-blue); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                 <h2 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                     </svg>
                     My Library
                 </h2>
-                <button id="close-saved-btn" style="background: transparent; border: none; color: white; font-size: 2rem; line-height: 1; cursor: pointer; padding: 0;">&times;</button>
+                <button id="close-saved-btn"
+                    style="background: transparent; border: none; color: white; font-size: 2rem; line-height: 1; cursor: pointer; padding: 0;">&times;</button>
             </div>
             <div id="saved-questions-list" style="padding: 24px; background: #f8fafc;">
                 <p style="color: #64748b; text-align: center; font-style: italic;">No saved questions yet.</p>
@@ -304,18 +372,24 @@
         <div class="modal-overlay" id="ai-settings-overlay"></div>
         <div class="modal-content" style="max-width: 500px; text-align: left;">
             <h2 style="color: #10b981; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
                 AI Evaluator Settings
             </h2>
             <div style="line-height: 1.6; color: #444; margin-bottom: 20px;">
                 <p>Enter a free Google Gemini API Key to unlock instant, detailed AI feedback on your essays.</p>
                 <p style="font-size: 0.9rem; margin-top: 10px;">
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--exam-blue); text-decoration: underline;">Get a free Gemini API key here</a>. Your key is stored securely in your browser and never shared.
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                        style="color: var(--exam-blue); text-decoration: underline;">Get a free Gemini API key here</a>.
+                    Your key is stored securely in your browser and never shared.
                 </p>
-                <input type="password" id="ai-api-key-input" class="custom-input" placeholder="Paste your API key (AIzaSy...)" style="margin-top: 15px;">
+                <input type="password" id="ai-api-key-input" class="custom-input"
+                    placeholder="Paste your API key (AIzaSy...)" style="margin-top: 15px;">
             </div>
             <div class="modal-actions" style="margin-top: 25px;">
-                <button id="save-ai-key-btn" class="btn primary" style="background: #10b981; border-color: #059669;">Save Key</button>
+                <button id="save-ai-key-btn" class="btn primary"
+                    style="background: #10b981; border-color: #059669;">Save Key</button>
                 <button id="close-ai-settings-btn" class="btn">Cancel</button>
             </div>
         </div>
@@ -324,25 +398,50 @@
     <!-- AI Evaluation Results Modal -->
     <div id="ai-results-modal" class="modal hidden">
         <div class="modal-overlay" id="ai-results-overlay"></div>
-        <div class="modal-content" style="max-width: 800px; width: 90%; text-align: left; overflow-y: auto; max-height: 90vh; padding: 0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
-            <div style="background: #10b981; color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+        <div class="modal-content"
+            style="max-width: 800px; width: 90%; text-align: left; overflow-y: auto; max-height: 90vh; padding: 0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+            <div
+                style="background: #10b981; color: white; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
                 <h2 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
                     ✨ Evaluation Results
                 </h2>
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <button id="ai-download-pdf-btn" class="btn" style="background: white; color: #10b981; padding: 6px 12px; font-size: 0.85rem; border: none; font-weight: bold; border-radius: 4px; display: none;">Download PDF</button>
-                    <button id="ai-download-doc-btn" class="btn" style="background: white; color: #10b981; padding: 6px 12px; font-size: 0.85rem; border: none; font-weight: bold; border-radius: 4px; display: none;">Download Word</button>
-                    <button id="close-ai-results-btn" style="background: transparent; border: none; color: white; font-size: 2rem; line-height: 1; cursor: pointer; padding: 0;">&times;</button>
+                    <button id="ai-download-pdf-btn" class="btn"
+                        style="background: white; color: #10b981; padding: 6px 12px; font-size: 0.85rem; border: none; font-weight: bold; border-radius: 4px; display: none;">Download
+                        PDF</button>
+                    <button id="ai-download-doc-btn" class="btn"
+                        style="background: white; color: #10b981; padding: 6px 12px; font-size: 0.85rem; border: none; font-weight: bold; border-radius: 4px; display: none;">Download
+                        Word</button>
+                    <button id="close-ai-results-btn"
+                        style="background: transparent; border: none; color: white; font-size: 2rem; line-height: 1; cursor: pointer; padding: 0;">&times;</button>
                 </div>
             </div>
-            
+
             <div id="ai-loading-indicator" style="padding: 50px; text-align: center; color: #64748b;">
-                <svg style="animation: spin 1s linear infinite; margin-bottom: 15px;" viewBox="0 0 24 24" width="40" height="40" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg>
+                <svg style="animation: spin 1s linear infinite; margin-bottom: 15px;" viewBox="0 0 24 24" width="40"
+                    height="40" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+                </svg>
                 <p style="font-size: 1.1rem;">The Examiner is reading your essay...</p>
             </div>
 
-            <div id="ai-results-content" style="padding: 25px; background: #fff; flex: 1; overflow-y: auto; line-height: 1.6; display: none;">
+            <div id="ai-results-content"
+                style="padding: 25px; background: #fff; flex: 1; overflow-y: auto; line-height: 1.6; display: none;">
                 <!-- AI Content Injected Here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="custom-confirm-modal" class="modal hidden" style="z-index: 3000;">
+        <div class="modal-overlay" id="custom-confirm-overlay" style="z-index: 2999;"></div>
+        <div class="modal-content" style="max-width: 450px; text-align: center; z-index: 3000;">
+            <h3 id="custom-confirm-title" style="color: #0f172a; margin-bottom: 15px; font-size: 1.25rem;">Confirm</h3>
+            <p id="custom-confirm-message" style="color: #475569; margin-bottom: 25px; line-height: 1.6;"></p>
+            <div class="modal-actions" style="justify-content: center; gap: 15px;">
+                <button id="custom-confirm-primary" class="btn primary">Overwrite</button>
+                <button id="custom-confirm-secondary" class="btn" style="background: #e2e8f0; color: #0f172a; border: none;">Save as New</button>
+                <button id="custom-confirm-cancel" class="btn">Cancel</button>
             </div>
         </div>
     </div>
@@ -354,4 +453,5 @@
     <script src="questions2.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

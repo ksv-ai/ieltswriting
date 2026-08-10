@@ -138,6 +138,7 @@ let currentT2Model = null;
 let randomT1Model = null;
 let randomT2Model = null;
 
+let currentLoadedQuestionId = { 1: null, 2: null };
 
 // --- Initialization ---
 function init() {
@@ -489,52 +490,114 @@ function getSavedQuestions() {
 function saveCustomQuestion(taskNum) {
     const questions = getSavedQuestions();
     
-    if (taskNum === 1) {
-        const promptText = document.getElementById('t1-custom-prompt').value.trim();
-        const modelAnswer = t1CustomModel.value.trim();
-        const imageSrc = t1CustomPreview.src;
-        
-        if (!promptText) {
-            alert('Please enter a prompt to save.');
-            return;
-        }
+    let promptText = '';
+    let modelAnswer = '';
+    let imageSrc = null;
 
+    if (taskNum === 1) {
+        promptText = document.getElementById('t1-custom-prompt').value.trim();
+        modelAnswer = t1CustomModel.value.trim();
+        imageSrc = t1CustomPreview.src;
+    } else {
+        promptText = document.getElementById('t2-custom-prompt').value.trim();
+        modelAnswer = t2CustomModel.value.trim();
+    }
+
+    if (!promptText) {
+        alert('Please enter a prompt to save.');
+        return;
+    }
+
+    const timerStr = document.getElementById(taskNum === 1 ? 't1-time' : 't2-time') ? document.getElementById(taskNum === 1 ? 't1-time' : 't2-time').innerText : 'N/A';
+
+    const saveAsNew = () => {
         const newQ = {
             id: Date.now().toString(),
-            task: 1,
+            task: taskNum,
             promptText: promptText,
             imageSrc: imageSrc && !imageSrc.endsWith(window.location.host + '/') ? imageSrc : null,
             modelAnswer: modelAnswer,
-            date: new Date().toLocaleDateString(),
+            date: new Date().toLocaleString(),
+            timer: timerStr,
             starred: false
         };
-        
         questions.push(newQ);
         localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
-        alert('Task 1 Custom Question Saved!');
-        
-    } else if (taskNum === 2) {
-        const promptText = document.getElementById('t2-custom-prompt').value.trim();
-        const modelAnswer = t2CustomModel.value.trim();
-        
-        if (!promptText) {
-            alert('Please enter a prompt to save.');
-            return;
-        }
+        currentLoadedQuestionId[taskNum] = newQ.id;
+        renderSavedQuestions();
+        alert(`Task ${taskNum} Custom Question Saved!`);
+    };
 
-        const newQ = {
-            id: Date.now().toString(),
-            task: 2,
-            promptText: promptText,
-            modelAnswer: modelAnswer,
-            date: new Date().toLocaleDateString(),
-            starred: false
-        };
-        
-        questions.push(newQ);
-        localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
-        alert('Task 2 Custom Question Saved!');
+    const overwriteExisting = (existingId) => {
+        const qIndex = questions.findIndex(item => item.id === existingId);
+        if (qIndex > -1) {
+            questions[qIndex].promptText = promptText;
+            questions[qIndex].modelAnswer = modelAnswer;
+            questions[qIndex].imageSrc = imageSrc && !imageSrc.endsWith(window.location.host + '/') ? imageSrc : null;
+            questions[qIndex].date = new Date().toLocaleString();
+            questions[qIndex].timer = timerStr;
+            localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
+            renderSavedQuestions();
+            alert(`Task ${taskNum} Custom Question Updated!`);
+        } else {
+            saveAsNew(); // Fallback if somehow not found
+        }
+    };
+
+    // Check if editing a loaded question
+    const loadedId = currentLoadedQuestionId[taskNum];
+    if (loadedId) {
+        showCustomConfirm(
+            "You are editing a previously saved question. Do you want to update it or save this as a brand new copy?",
+            "Update Existing",
+            "Save as New",
+            () => overwriteExisting(loadedId),
+            () => saveAsNew()
+        );
+        return;
     }
+
+    // Check if exact prompt already exists
+    const duplicateQ = questions.find(q => q.task === taskNum && q.promptText === promptText);
+    if (duplicateQ) {
+        showCustomConfirm(
+            "This exact prompt already exists in your library. Do you want to overwrite it or save this as a duplicate?",
+            "Overwrite",
+            "Save as Duplicate",
+            () => overwriteExisting(duplicateQ.id),
+            () => saveAsNew()
+        );
+        return;
+    }
+
+    saveAsNew();
+}
+
+function showCustomConfirm(message, primaryText, secondaryText, onPrimary, onSecondary) {
+    const modal = document.getElementById('custom-confirm-modal');
+    const overlay = document.getElementById('custom-confirm-overlay');
+    document.getElementById('custom-confirm-message').innerText = message;
+    
+    const btnPrimary = document.getElementById('custom-confirm-primary');
+    const btnSecondary = document.getElementById('custom-confirm-secondary');
+    const btnCancel = document.getElementById('custom-confirm-cancel');
+
+    btnPrimary.innerText = primaryText;
+    btnSecondary.innerText = secondaryText;
+
+    modal.classList.remove('hidden');
+
+    const cleanup = () => {
+        modal.classList.add('hidden');
+        btnPrimary.replaceWith(btnPrimary.cloneNode(true));
+        btnSecondary.replaceWith(btnSecondary.cloneNode(true));
+        btnCancel.replaceWith(btnCancel.cloneNode(true));
+    };
+
+    document.getElementById('custom-confirm-primary').addEventListener('click', () => { cleanup(); onPrimary(); });
+    document.getElementById('custom-confirm-secondary').addEventListener('click', () => { cleanup(); onSecondary(); });
+    document.getElementById('custom-confirm-cancel').addEventListener('click', () => { cleanup(); });
+    overlay.addEventListener('click', () => { cleanup(); }, { once: true });
 }
 
 function renderSavedQuestions() {
@@ -572,7 +635,7 @@ function renderSavedQuestions() {
                         </svg>
                     </button>
                 </div>
-                <span>${q.date}</span>
+                <span style="font-size: 0.85rem; color: #64748b;">${q.date}${q.timer ? ` • Timer: ${q.timer}` : ''}</span>
             </div>
             <div class="saved-item-prompt">${q.promptText}</div>
             <div class="saved-item-actions">
@@ -594,30 +657,34 @@ window.toggleStarSavedQuestion = function(id) {
     }
 };
 
-window.deleteSavedQuestion = function(id) {
-    if (!confirm('Are you sure you want to delete this question?')) return;
-    let questions = getSavedQuestions();
-    questions = questions.filter(q => q.id !== id);
-    localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
-    renderSavedQuestions();
-};
+    window.deleteSavedQuestion = function(id) {
+        if (!confirm('Are you sure you want to delete this question?')) return;
+        let questions = getSavedQuestions();
+        questions = questions.filter(q => q.id !== id);
+        localStorage.setItem('ielts_saved_questions', JSON.stringify(questions));
+        if (currentLoadedQuestionId[1] === id) currentLoadedQuestionId[1] = null;
+        if (currentLoadedQuestionId[2] === id) currentLoadedQuestionId[2] = null;
+        renderSavedQuestions();
+    };
 
-window.loadSavedQuestion = function(id) {
-    const questions = getSavedQuestions();
-    const q = questions.find(item => item.id === id);
-    if (!q) return;
+    window.loadSavedQuestion = function(id) {
+        const questions = getSavedQuestions();
+        const q = questions.find(item => item.id === id);
+        if (!q) return;
 
-    // Switch to Custom Mode if not already
-    isCustomMode = true;
-    updateCustomModels();
-    settingsBtn.style.color = 'var(--exam-blue)';
-    document.querySelectorAll('.custom-input').forEach(el => el.classList.remove('readonly-bg'));
-    t1RandomMode.classList.add('hidden');
-    t1CustomMode.classList.remove('hidden');
-    t2RandomMode.classList.add('hidden');
-    t2CustomMode.classList.remove('hidden');
+        // Switch to Custom Mode if not already
+        isCustomMode = true;
+        updateCustomModels();
+        settingsBtn.style.color = 'var(--exam-blue)';
+        document.querySelectorAll('.custom-input').forEach(el => el.classList.remove('readonly-bg'));
+        t1RandomMode.classList.add('hidden');
+        t1CustomMode.classList.remove('hidden');
+        t2RandomMode.classList.add('hidden');
+        t2CustomMode.classList.remove('hidden');
 
-    if (q.task === 1) {
+        currentLoadedQuestionId[q.task] = q.id;
+
+        if (q.task === 1) {
         document.getElementById('t1-custom-prompt').value = q.promptText || '';
         t1CustomModel.value = q.modelAnswer || '';
         if (q.imageSrc) {
