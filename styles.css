@@ -24,14 +24,21 @@
     padding: 0;
 }
 
-body,
-html {
-    height: 100%;
+body {
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-    background-color: var(--exam-light-grey);
+    margin: 0;
+    padding: 0;
+    font-size: 14px; /* Fixed UI size */
     color: var(--exam-text);
-    font-size: var(--base-font-size);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
+}
+
+/* Apply variable font size only to reading and writing areas */
+.prompt-content, .task-instruction, .writing-area textarea, .custom-input, .ai-card, .polished-box, .original-box {
+    font-size: var(--base-font-size);
 }
 
 /* -------------------------------------
@@ -882,18 +889,60 @@ canvas {
 }
 
 /* Scrollbar for AI Results */
-#ai-results-content::-webkit-scrollbar {
+.modal-content::-webkit-scrollbar {
     width: 8px;
 }
-
-#ai-results-content::-webkit-scrollbar-track {
-    background: #f1f5f9; 
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+.modal-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
     border-radius: 4px;
 }
- 
-#ai-results-content::-webkit-scrollbar-thumb {
-    background: #cbd5e1; 
-    border-radius: 4px;
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+    /* Stack split panes vertically */
+    .split-pane {
+        flex-direction: column !important;
+    }
+    
+    /* Make panes take 50% height by default */
+    .prompt-section, .writing-section {
+        width: 100% !important;
+        height: 50% !important;
+        max-width: none !important;
+    }
+    
+    /* Disable drag resizer horizontally and make it a vertical divider */
+    .resizer {
+        width: 100% !important;
+        height: 8px !important;
+        cursor: row-resize !important;
+    }
+    
+    /* Wrap top bar items */
+    .top-bar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .nav-buttons {
+        gap: 10px;
+    }
+    
+    .settings-group {
+        width: 100%;
+        justify-content: center;
+        margin-top: 5px;
+    }
+    
+    .candidate-info {
+        display: none; /* Hide ID on small screens to save space */
+    }
 }
 
 #ai-results-content::-webkit-scrollbar-thumb:hover {
